@@ -35,6 +35,13 @@ export default function Navbar() {
 			>
 				Dashboard
 			</NavLink>
+			<NavLink
+				isSelected={isSelected('/samples')}
+				isMobile={isMobile}
+				href='/samples'
+			>
+				Samples
+			</NavLink>
 			<NavLink isMobile={isMobile} onClick={handleLogout}>
 				Logout
 			</NavLink>
@@ -49,13 +56,6 @@ export default function Navbar() {
 				href='/auth/login'
 			>
 				Login
-			</NavLink>
-			<NavLink
-				isSelected={isSelected('/auth/register')}
-				isMobile={isMobile}
-				href='/auth/register'
-			>
-				Register
 			</NavLink>
 		</>
 	);
@@ -87,7 +87,7 @@ export default function Navbar() {
 							<div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
 								<div className='flex flex-shrink-0 items-center'>
 									<NavLink href='/' isBanner>
-										Full Auth
+										NQSL
 									</NavLink>
 								</div>
 								<div className='hidden sm:ml-6 sm:block'>

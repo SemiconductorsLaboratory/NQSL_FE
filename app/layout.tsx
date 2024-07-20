@@ -8,8 +8,8 @@ import { Setup } from '@/components/utils';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-	title: 'Full Auth',
-	description: 'Full Auth application that provides jwt authentication',
+	title: 'NQSL',
+	description: 'Application for Nano Quantum Semiconductor Laboratory',
 };
 
 export default function RootLayout({
