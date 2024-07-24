@@ -1,5 +1,4 @@
 import { apiSlice } from '../services/apiSlice';
-import { cookies } from "next/headers";
 
 interface User {
 	first_name: string;
@@ -92,6 +91,40 @@ const authApiSlice = apiSlice.injectEndpoints({
 				body: { uid, token, new_password, re_new_password },
 			}),
 		}),
+		getFavorites: builder.query({
+			query: () => 'samples/favorites/list/',
+		}),
+		addFavorite: builder.mutation({
+			query: (sample_name) => ({
+				url: 'samples/favorites/add/',
+				method: 'POST',
+				body: { sample_name },
+			}),
+		}),
+		removeFavorite: builder.mutation({
+			query: (sample_name) => ({
+				url: 'samples/favorites/remove/',
+				method: 'POST',
+				body: { sample_name },
+			}),
+		}),
+		getSamples: builder.query({
+			query: () => 'samples/',
+		}),
+		addSample: builder.mutation({
+			query: (sampleData) => ({
+				url: 'samples/add/',
+				method: 'POST',
+				body: sampleData,
+			}),
+		}),
+		deleteSample: builder.mutation({
+			query: (sampleName) => ({
+				url: 'samples/remove/',
+				method: 'POST',
+				body: { name: sampleName },
+			}),
+		}),
 	}),
 });
 
@@ -105,4 +138,10 @@ export const {
 	useActivationMutation,
 	useResetPasswordMutation,
 	useResetPasswordConfirmMutation,
+	useGetFavoritesQuery,
+	useAddFavoriteMutation,
+	useRemoveFavoriteMutation,
+	useGetSamplesQuery,
+	useAddSampleMutation,
+	useDeleteSampleMutation
 } = authApiSlice;

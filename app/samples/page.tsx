@@ -1,12 +1,16 @@
 'use client';
 
-import { useRetrieveUserQuery } from '@/redux/features/authApiSlice';
-import { List, Spinner } from '@/components/common';
+import React from 'react';
+import SampleComponent from '@/components/common/Sample';
 
-export default function Page() {
+const SamplePage = () => {
 	return (
-		<h1>
-			Samples
-		</h1>
+		<div>
+			<h1>Sample Management</h1>
+			<SampleComponent />
+		</div>
 	);
-}
+};
+
+export default SamplePage;
+
