@@ -138,6 +138,7 @@ export const {
 	useActivationMutation,
 	useResetPasswordMutation,
 	useResetPasswordConfirmMutation,
+
 	useGetFavoritesQuery,
 	useAddFavoriteMutation,
 	useRemoveFavoriteMutation,

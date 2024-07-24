@@ -1,14 +1,26 @@
 'use client';
 
 import React from 'react';
-import SampleComponent from '@/components/common/Sample';
+import "../../styles/SamplesPage.css"
+import FavoriteComponent from "@/components/common/favorites";
+import PropertyComponent from "@/components/common/property";
 
 const SamplePage = () => {
 	return (
-		<div>
-			<h1>Sample Management</h1>
-			<SampleComponent />
-		</div>
+		<section className={"container-sample"}>
+			<div className={"layout-sampleSearchbar"}>
+
+			</div>
+			<div className={"layout-sampleFavorite"}>
+				<FavoriteComponent/>
+			</div>
+			<div className={"layout-sampleProperty"}>
+				<PropertyComponent/>
+			</div>
+			<div className={"layout-sampleData"}>
+
+			</div>
+		</section>
 	);
 };
 
