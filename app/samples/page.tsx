@@ -1,7 +1,8 @@
 'use client';
 
 import React from 'react';
-import SampleComponent from '@/components/common/Sample';
+import SampleComponent from '@/components/common/Sample'
+// pute
 
 const SamplePage = () => {
 	return (
