@@ -3,9 +3,7 @@ import { useGetSamplesQuery } from '@/redux/features/authApiSlice';
 import axios from 'axios';
 import "../../styles/Searchbar.css"
 
-const formatNameForUrl = (name) => {
-    return name.toLowerCase().replace(/\s+/g, '-');
-};
+
 
 const SearchbarComponent = () => {
     const { data: samples, error, isLoading } = useGetSamplesQuery();
@@ -20,7 +18,7 @@ const SearchbarComponent = () => {
 
     const handleSampleClick = async (sample) => {
         try {
-            const response = await axios.get(`http://192.168.2.23:8000/api/samples/${formatNameForUrl(sample.name)}`);
+            const response = await axios.get(`http://192.168.2.23:8000/api/samples/${sample.name}`);
             console.log('Sample details fetched from API:', response.data);
             setSelectedSample(response.data);
         } catch (err) {
@@ -56,7 +54,7 @@ const SearchbarComponent = () => {
                 onChange={handleSearch}
             />
             {isLoading ? (
-                <p>Loading...</p>
+                <p></p>
             ) : error ? (
                 <p>Error loading samples</p>
             ) : (
@@ -67,7 +65,7 @@ const SearchbarComponent = () => {
                                 key={sample.name}
                                 onClick={() => handleSampleClick(sample)}
                             >
-                                <a href={`/samples/${formatNameForUrl(sample.name)}`}
+                                <a href={`/samples/${(sample.name)}`}
                                    className="sample-list-item">
                                     {sample.name}
                                 </a>
@@ -75,13 +73,6 @@ const SearchbarComponent = () => {
                         ))}
                     </ul>
                 )
-            )}
-            {errorState && <p>{errorState}</p>}
-            {selectedSample && (
-                <div>
-                    <h3>Sample Details</h3>
-                    <p>{JSON.stringify(selectedSample)}</p>
-                </div>
             )}
         </div>
     );

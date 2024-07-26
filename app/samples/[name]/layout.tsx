@@ -1,14 +1,22 @@
 'use client';
 
 import React from 'react';
+import { useParams } from 'next/navigation';
+import "../../../styles/layoutData.css";
 
+const SampleDataLayout: React.FC = () => {
+    const params = useParams();
+    const { name } = params as { name?: string };
 
-const LayoutName = () => {
+    if (!name) {
+        return <p>No name provided</p>;
+    }
+
     return (
-        <section className={"container-sample"}>
-            <p>bite</p>
-        </section>
+        <div className="sample-data">
+            <p>{name}</p>
+        </div>
     );
 };
 
-export default LayoutName;
+export default SampleDataLayout;

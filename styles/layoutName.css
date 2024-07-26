@@ -1,0 +1,27 @@
+.sample-type{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+}
+
+.name{
+    width: 100%;
+    align-self: center;
+    font-weight: bold;
+    padding-left: 10px;
+    font-size: 2em;
+    color: #454545;
+}
+
+.button-favorite{
+    display: flex;
+    width: 5%;
+    justify-content: center;
+    align-self: center;
+}
+
+.trash-icon {
+    display: flex;
+    color: #454545;
+}
