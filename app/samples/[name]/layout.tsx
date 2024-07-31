@@ -39,8 +39,18 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
         router.push(`/samples/${name}/${method}/${id}`);
     };
 
+    const getMethodClass = (method: string) => {
+        if (method === 'sem' || method === 'hrsem') {
+            return 'method-red';
+        } else if (method === 'afm' || method === 'kpafm') {
+            return 'method-blue';
+        } else {
+            return '';
+        }
+    };
+
     return (
-        <div className={"container-data"}>
+        <div className="container-data">
             <div className="sample-data">
                 <div className="substrate">
                     <p>Substrate</p>
@@ -56,7 +66,7 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
                 {combinedData.map((item: any, index: number) => (
                     <div
                         key={index}
-                        className="method-block"
+                        className={`method-block ${getMethodClass(item.method)}`}
                         onClick={() => handleClick(item.method, item.id)}
                         style={{ cursor: 'pointer' }}
                     >

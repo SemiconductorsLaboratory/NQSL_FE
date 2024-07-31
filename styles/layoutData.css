@@ -32,3 +32,11 @@
     width: 100%;
     height: 100%;
 }
+
+.method-red {
+    background-color: red;
+}
+
+.method-blue {
+    background-color: blue;
+}

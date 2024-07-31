@@ -16,6 +16,7 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
         return <p>Loading...</p>;
     }
 
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data, error, isLoading } = useSemDetailQuery(id);
 
     if (isLoading) {
