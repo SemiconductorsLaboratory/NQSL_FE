@@ -3,6 +3,7 @@
 import React, { ReactNode } from 'react';
 import { useParams } from 'next/navigation';
 import { useSemDetailQuery } from "@/redux/features/sampleApiSlice";
+import { useRetrieveFileQuery } from "@/redux/features/fileApiSlice"
 
 interface LayoutProps {
     children: ReactNode;
@@ -16,7 +17,6 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
         return <p>Loading...</p>;
     }
 
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data, error, isLoading } = useSemDetailQuery(id);
 
     if (isLoading) {
@@ -55,10 +55,41 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
                 <p>Voltage: {data.voltage}</p>
                 <p>Current: {data.current}</p>
                 <p>Image: {data.image}</p>
-                <p>Files: {data.files.join(', ')}</p>
+                <FileList files={data.files} />
             </div>
-            {children}
         </div>
+    );
+};
+
+const FileList: React.FC<{ files: string[] }> = ({ files }) => {
+    return (
+        <div>
+            <h2>Files</h2>
+            <ul>
+                {files.map((file, index) => (
+                    <FileItem key={index} url={file} />
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+const FileItem: React.FC<{ url: string }> = ({ url }) => {
+    console.log('Original URL:', url);
+    const transformedUrl = url.replace('/api', '');
+    console.log('Transformed URL:', transformedUrl);
+
+    const { data, error, isLoading } = useRetrieveFileQuery(transformedUrl);
+
+    if (isLoading) return <li>Loading file...</li>;
+    if (error) return <li>Error loading file</li>;
+
+    return (
+        <li>
+            <a href={data.url} target="_blank" rel="noopener noreferrer">
+                {data.fileName}
+            </a>
+        </li>
     );
 };
 
