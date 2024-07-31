@@ -1,0 +1,20 @@
+.property-title {
+    margin: 5px 0 5px 5px;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #454545;
+}
+
+.line {
+    background: #4F6D7A;
+    display: flex;
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.container-property {
+    width: 100%;
+    padding: 0 10px 0;
+}

@@ -3,11 +3,10 @@
 import React, { ReactNode } from 'react';
 import "../../styles/SamplesPage.css";
 import FavoriteComponent from "@/components/common/favorites";
-import PropertyComponent from "@/components/common/property";
 import SearchbarComponent from "@/components/common/Searchbar";
 import { useParams } from "next/navigation";
+import PropertyComponent from "./[name]/layoutPreperty";
 import SampleNameLayout from "./[name]/layoutName";
-import SampleDataLayout from "./[name]/layout";
 
 interface LayoutProps {
 	children: ReactNode;
@@ -20,21 +19,21 @@ const SamplePage: React.FC<LayoutProps> = ({ children }) => {
 	return (
 		<section className="container-sample">
 			<div className="layout-sampleSearchbar">
-				<SearchbarComponent/>
+				<SearchbarComponent />
 			</div>
 			<div className="layout-sampleFavorite">
-				<FavoriteComponent/>
-			</div>
-			<div className="layout-sampleProperty">
-				<PropertyComponent/>
+				<FavoriteComponent />
 			</div>
 			{name && (
 				<>
+					<div className="layout-sampleProperty">
+						<PropertyComponent />
+					</div>
 					<div className="layout-sampleName">
-						<SampleNameLayout/>
+						<SampleNameLayout />
 					</div>
 					<div className="layout-sampleData">
-						<SampleDataLayout/>
+						{children}
 					</div>
 				</>
 			)}

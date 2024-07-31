@@ -1,8 +1,34 @@
-.sample-data {
+.container-data {
     margin: 0 10px 10px 10px;
     background: white;
     width: 100%;
     height: 99%;
     border-radius: 20px;
     box-shadow: 2px 2px 2px darkgray;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.sample-data {
+    flex-direction: column;
+}
+
+.substrate {
+    margin-bottom: 20px;
+}
+
+.method-block {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.method-block h3 {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.sample-methode {
+    width: 100%;
+    height: 100%;
 }
