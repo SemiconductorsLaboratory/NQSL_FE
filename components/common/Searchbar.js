@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useGetSamplesQuery } from '@/redux/features/authApiSlice';
 import axios from 'axios';
-import "../../styles/Searchbar.css"
-
-
+import "../../styles/Searchbar.css";
+import Image from "next/image";
+import ModalSampleAdd from "@/components/Modal/Modal-SampleAdd";
+import { Modal } from "@/components/Modal/Modal";
 
 const SearchbarComponent = () => {
     const { data: samples, error, isLoading } = useGetSamplesQuery();
@@ -11,6 +12,8 @@ const SearchbarComponent = () => {
     const [selectedSample, setSelectedSample] = useState(null);
     const [errorState, setError] = useState(null);
     const searchRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isProcessing] = useState(false);
 
     const handleSearch = (e) => {
         setQuery(e.target.value);
@@ -46,13 +49,38 @@ const SearchbarComponent = () => {
 
     return (
         <div className="container-searchbar" ref={searchRef}>
-            <input
-                className="search-bar"
-                type="text"
-                placeholder="Search..."
-                value={query}
-                onChange={handleSearch}
-            />
+            <div className="search-bar-container">
+                <div className="search-bar-with-icon">
+                    <Image
+                        className="icon-loop"
+                        src="/loop.png"
+                        width={30}
+                        height={30}
+                        alt="search icon"
+                    />
+                    <input
+                        className="search-bar"
+                        type="text"
+                        placeholder="Search..."
+                        value={query}
+                        onChange={handleSearch}
+                    />
+                </div>
+                <button onClick={() => setIsModalOpen(true)} disabled={isProcessing}>
+                    <Image
+                        className="icon-add"
+                        src="/add.png"
+                        width={35}
+                        height={35}
+                        alt="add icon"
+                    />
+                </button>
+            </div>
+
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <ModalSampleAdd />
+            </Modal>
+
             {isLoading ? (
                 <p></p>
             ) : error ? (
@@ -65,7 +93,7 @@ const SearchbarComponent = () => {
                                 key={sample.name}
                                 onClick={() => handleSampleClick(sample)}
                             >
-                                <a href={`/samples/${(sample.name)}`}
+                                <a href={`/samples/${sample.name}`}
                                    className="sample-list-item">
                                     {sample.name}
                                 </a>

@@ -44,10 +44,10 @@ const FavoriteComponent: React.FC = () => {
                             </div>
                             <button onClick={() => handleRemoveFavorite(sampleName)}>
                                 <Image
-                                    src="/trash.png"
+                                    src="/bookmark-filled.png"
                                     alt="trash"
-                                    width={20}
-                                    height={20}
+                                    width={25}
+                                    height={25}
                                 />
                             </button>
                         </li>

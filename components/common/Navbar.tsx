@@ -2,13 +2,13 @@
 
 import { usePathname } from 'next/navigation';
 import { Disclosure } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useLogoutMutation } from '@/redux/features/authApiSlice';
 import { logout as setLogout } from '@/redux/features/authSlice';
 import { NavLink } from '@/components/common';
 import "../../styles/Navbar.css"
-import {className} from "postcss-selector-parser";
+import Image from "next/image";
+import React from "react";
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -44,9 +44,6 @@ export default function Navbar() {
 			>
 				Samples
 			</NavLink>
-			<NavLink isMobile={isMobile} onClick={handleLogout}>
-				Logout
-			</NavLink>
 		</>
 	);
 
@@ -66,22 +63,25 @@ export default function Navbar() {
 		<Disclosure as='nav' className='container-navbar'>
 			{({ open }) => (
 				<>
-					<div className=''>
-						<div className=''>
-							<div className='test'>
-								<div className='testt'>
-									<NavLink href='/' isBanner>
-										NQSL
-									</NavLink>
-								</div>
-								<div className=''>
-									<div className=''>
-										{isAuthenticated
-											? authLinks(false)
-											: guestLinks(false)}
-									</div>
-								</div>
-							</div>
+					<Image
+						src="/polytechnique_gauche_rgb.png"
+						width={150}
+						height={150}
+						alt="polytechnique"
+					/>
+					<div className='navbar'>
+						<div className='nav-links-left'>
+							<NavLink href='/' isBanner>
+								Home
+							</NavLink>
+							{isAuthenticated ? authLinks(false) : guestLinks(false)}
+						</div>
+						<div className='nav-links-right'>
+							{isAuthenticated && (
+								<NavLink onClick={handleLogout}>
+									<p>Logout</p>
+								</NavLink>
+							)}
 						</div>
 					</div>
 				</>
