@@ -1,0 +1,40 @@
+.container-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+}
+
+.navbar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.nav-links-left {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links-right {
+    display: flex;
+    align-items: center;
+}
+
+.nav-links-left a, .nav-links-right a {
+    margin-right: 20px;
+    text-decoration: none;
+    color: #333;
+    background-color: transparent;
+}
+
+.nav-links-right a {
+    margin-right: 0;
+}
+
+.nav-links-left a:hover, .nav-links-right a:hover {
+    color: #0070f3;
+    background-color: transparent;
+}

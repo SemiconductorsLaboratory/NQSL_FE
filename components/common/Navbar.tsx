@@ -2,11 +2,13 @@
 
 import { usePathname } from 'next/navigation';
 import { Disclosure } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useAppSelector, useAppDispatch } from '@/redux/hooks';
 import { useLogoutMutation } from '@/redux/features/authApiSlice';
 import { logout as setLogout } from '@/redux/features/authSlice';
 import { NavLink } from '@/components/common';
+import "../../styles/Navbar.css"
+import Image from "next/image";
+import React from "react";
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -42,9 +44,6 @@ export default function Navbar() {
 			>
 				Samples
 			</NavLink>
-			<NavLink isMobile={isMobile} onClick={handleLogout}>
-				Logout
-			</NavLink>
 		</>
 	);
 
@@ -61,53 +60,30 @@ export default function Navbar() {
 	);
 
 	return (
-		<Disclosure as='nav' className='bg-gray-800'>
+		<Disclosure as='nav' className='container-navbar'>
 			{({ open }) => (
 				<>
-					<div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
-						<div className='relative flex h-16 items-center justify-between'>
-							<div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>
-								<Disclosure.Button className='inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'>
-									<span className='sr-only'>
-										Open main menu
-									</span>
-									{open ? (
-										<XMarkIcon
-											className='block h-6 w-6'
-											aria-hidden='true'
-										/>
-									) : (
-										<Bars3Icon
-											className='block h-6 w-6'
-											aria-hidden='true'
-										/>
-									)}
-								</Disclosure.Button>
-							</div>
-							<div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
-								<div className='flex flex-shrink-0 items-center'>
-									<NavLink href='/' isBanner>
-										NQSL
-									</NavLink>
-								</div>
-								<div className='hidden sm:ml-6 sm:block'>
-									<div className='flex space-x-4'>
-										{isAuthenticated
-											? authLinks(false)
-											: guestLinks(false)}
-									</div>
-								</div>
-							</div>
+					<Image
+						src="/polytechnique_gauche_rgb.png"
+						width={150}
+						height={150}
+						alt="polytechnique"
+					/>
+					<div className='navbar'>
+						<div className='nav-links-left'>
+							<NavLink href='/' isBanner>
+								Home
+							</NavLink>
+							{isAuthenticated ? authLinks(false) : guestLinks(false)}
+						</div>
+						<div className='nav-links-right'>
+							{isAuthenticated && (
+								<NavLink onClick={handleLogout}>
+									<p>Logout</p>
+								</NavLink>
+							)}
 						</div>
 					</div>
-
-					<Disclosure.Panel className='sm:hidden'>
-						<div className='space-y-1 px-2 pb-3 pt-2'>
-							{isAuthenticated
-								? authLinks(true)
-								: guestLinks(true)}
-						</div>
-					</Disclosure.Panel>
 				</>
 			)}
 		</Disclosure>

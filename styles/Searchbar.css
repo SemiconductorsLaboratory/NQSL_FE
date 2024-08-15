@@ -1,0 +1,72 @@
+
+.container-searchbar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 15px 10px;
+    border: 0;
+}
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative; /* Assure que la sample-list est positionnée correctement */
+}
+
+.search-bar-with-icon {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+}
+
+.icon-loop {
+    position: absolute;
+    left: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.search-bar {
+    width: 100%;
+    height: 40px;
+    padding-left: 40px; /* Espace pour l'icône de la loupe */
+    box-shadow: 2px 2px 2px darkgray;
+    transition: box-shadow 0.3s ease-in-out;
+    border: 0;
+    border-radius: 10px;
+    outline: none;
+}
+
+.icon-add {
+    margin-left: 10px;
+}
+
+.search-bar:focus,
+.search-bar:hover {
+    box-shadow: 3px 3px 3px gray;
+}
+
+.sample-list {
+    position: absolute;
+    top: 65px;
+    width: 95%;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 2px 2px 2px darkgray;
+    z-index: 1000;
+}
+
+.sample-list-item {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    padding: 5px 10px;
+}
+
+.sample-list-item:hover {
+    border-radius: 10px;
+    background: #EFEFEF;
+}
