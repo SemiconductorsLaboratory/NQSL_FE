@@ -34,7 +34,7 @@ const Resizer: React.FC<{ onResize: (newWidth: number) => void }> = ({ onResize 
     return <div className="resizer" onMouseDown={handleMouseDown} />;
 };
 
-const SubstrateBlock: React.FC<{ substrateId: string | null, onClick: () => void }> = ({ substrateId, onClick }) => (
+const SubstrateBlock: React.FC<{ substrateName: string | null, onClick: () => void }> = ({ substrateName, onClick }) => (
     <div className={"substrate substrate-border"} onClick={onClick}>
         <p>Substrate</p>
     </div>
@@ -74,14 +74,43 @@ const SampleList: React.FC<{ combinedData: any[], onClick: (method: string, id: 
     </>
 );
 
+const Dropdown: React.FC<{ title: string, items: any[] }> = ({ title, items }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <div className="dropdown">
+            <div className="dropdown-header" onClick={toggleDropdown}>
+                <h3>{title}</h3>
+            </div>
+            {isOpen && (
+                <div className="dropdown-body">
+                    {items.map((item, index) => (
+                        <MethodBlock key={index} item={item} onClick={() => { /* Naviguer vers la méthode correspondante */ }} />
+                    ))}
+                    end
+                </div>
+            )}
+        </div>
+    );
+};
+
 const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
     const params = useParams();
     const { name } = params as { name?: string };
+    const router = useRouter();
+
     const { data: detailData, error: detailError, isLoading: detailLoading } = useDetailSampleQuery(name, {
         skip: !name,
     });
 
-    const router = useRouter();
+    const { data: prevSampleData, error: prevSampleError, isLoading: prevSampleLoading } = useDetailSampleQuery(detailData?.prev_sample, {
+        skip: !detailData?.prev_sample,
+    });
+
     const [columnWidth, setColumnWidth] = useState(50); // Width in percentage
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -93,16 +122,28 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
         }
     };
 
+    const [substrateName, setSubstrateName] = useState<string | null>(null);
     const [substrateId, setSubstrateId] = useState<string | null>(null);
-    const { data: substrateData, error: substrateError, isLoading: substrateLoading } = useSubstrateSampleQuery(name, {
-        skip: !name,
-    });
 
     useEffect(() => {
-        if (substrateData?.layers?.length > 0) {
-            setSubstrateId(substrateData.layers[0].id_layer.toString());
+        console.log('Raw API Data:', detailData); // Log des données brutes de l'API
+        if (detailData) {
+            if (detailData.substrate) {
+                console.log('Substrate Data:', detailData.substrate); // Log des détails du substrate
+                if (detailData.substrate.id) { // Utilisation de l'ID comme identifiant principal
+                    console.log('Substrate ID:', detailData.substrate.id); // Log de l'ID du substrate
+                    setSubstrateName(detailData.substrate.id.toString());
+                    setSubstrateId(detailData.substrate.id);
+                } else {
+                    console.log('Substrate ID is missing.');
+                }
+            } else {
+                console.log('Substrate is missing in detailData.');
+            }
+        } else {
+            console.log('No detail data available.');
         }
-    }, [substrateData]);
+    }, [detailData]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -110,40 +151,37 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
         return <p>No name provided</p>;
     }
 
-    if (detailLoading || substrateLoading) {
-        return <p>Loading...</p>;
-    }
-
-    if (detailError || substrateError) {
-        return <p>Error loading data</p>;
-    }
-
     if (!detailData) {
+        console.log('No detail data available.');
         return <p>No data available</p>;
     }
 
-    // Ajouter prev_sample si substrate est vide
     let combinedData = [
         ...(detailData.sem ? detailData.sem.map((item: any) => ({ ...item, method: 'sem', id: item.id })) : []),
         ...(detailData.afm ? detailData.afm.map((item: any) => ({ ...item, method: 'afm', id: item.id })) : []),
     ].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
 
-    if (!detailData.substrate && detailData.prev_sample) {
-        combinedData.unshift({
-            method: "prev_sample",
-            created_at: "", // Vous pouvez ajouter la date ici si disponible
-            description: detailData.prev_sample,
-            id: "prev_sample"
-        });
+    // Ajouter les méthodes du prev_sample s'il existe et si ses données ont été récupérées
+    let prevSampleMethods: string | any[] = [];
+    if (prevSampleData) {
+        prevSampleMethods = [
+            ...(prevSampleData.sem ? prevSampleData.sem.map((item: any) => ({
+                ...item,
+                method: 'sem',
+                id: item.id,
+                fromPrevSample: true
+            })) : []),
+            ...(prevSampleData.afm ? prevSampleData.afm.map((item: any) => ({
+                ...item,
+                method: 'afm',
+                id: item.id,
+                fromPrevSample: true
+            })) : []),
+        ];
     }
 
     const handleClick = (method: string, id: string) => {
-        if (method === 'prev_sample') {
-            // Rediriger ou gérer le prev_sample selon vos besoins
-            console.log("Clicked on prev_sample:", id);
-        } else {
-            router.push(`/samples/${name}/${method}/${id}`);
-        }
+        router.push(`/samples/${name}/${method}/${id}`);
     };
 
     const handleSubstrateClick = () => {
@@ -157,8 +195,15 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
     return (
         <div className="container-data" ref={containerRef}>
             <div className="sample-data" style={{ width: `${columnWidth}%` }}>
-                <SubstrateBlock substrateId={substrateId} onClick={handleSubstrateClick} />
-                <SampleList combinedData={combinedData} onClick={handleClick} onAddNew={() => setIsModalOpen(true)} />
+                {substrateName && (
+                    <SubstrateBlock substrateName={substrateName} onClick={handleSubstrateClick} />
+                )}
+                {prevSampleMethods.length > 0 && (
+                    <Dropdown title={`Prev Sample: ${detailData?.prev_sample}`} items={prevSampleMethods} />
+                )}
+                {combinedData.length > 0 && (
+                    <SampleList combinedData={combinedData} onClick={handleClick} onAddNew={() => setIsModalOpen(true)} />
+                )}
             </div>
             <Resizer onResize={handleResize} />
             <div className="sample-methode" style={{ width: `${100 - columnWidth}%` }}>

@@ -2,7 +2,6 @@ import React, { ReactNode, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useSemDetailQuery } from "@/redux/features/sampleApiSlice";
 import ImageDisplay from '@/components/ImageDisplay';
-import FileList from '@/components/FileList';
 import '@/styles/layoutDescription.css';
 import * as pdfjsLib from 'pdfjs-dist';
 import 'pdfjs-dist/build/pdf.worker.entry';

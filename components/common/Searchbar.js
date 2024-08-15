@@ -70,8 +70,8 @@ const SearchbarComponent = () => {
                     <Image
                         className="icon-add"
                         src="/add.png"
-                        width={35}
-                        height={35}
+                        width={30}
+                        height={30}
                         alt="add icon"
                     />
                 </button>

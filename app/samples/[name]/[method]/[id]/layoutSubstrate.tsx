@@ -1,19 +1,44 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { useSubstrateSampleQuery } from "@/redux/features/sampleApiSlice";
-import '@/styles/layoutSubstrate.css'
+import { useSubstrateSampleQuery, useDetailSampleQuery } from "@/redux/features/sampleApiSlice";
+import '@/styles/layoutSubstrate.css';
 
 const SubstrateLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const params = useParams();
     const { name } = params as { name?: string };
-    const { data: substrateData, error: substrateError, isLoading: substrateLoading } = useSubstrateSampleQuery(name, {
+
+    // Récupérer les détails du sample principal
+    const { data: detailData, error: detailError, isLoading: detailLoading } = useDetailSampleQuery(name, {
         skip: !name,
     });
 
-    if (substrateLoading) {
+    const [sampleName, setSampleName] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (detailData && detailData.prev_sample) {
+            setSampleName(detailData.prev_sample);
+        } else if (name) {
+            setSampleName(null); // Si prev_sample n'est pas présent, on ne fait pas de requête pour le substrate
+        }
+    }, [detailData, name]);
+
+    // Récupérer les données du substrate uniquement si sampleName est défini
+    const { data: substrateData, error: substrateError, isLoading: substrateLoading } = useSubstrateSampleQuery(sampleName as string, {
+        skip: !sampleName, // Skip si sampleName n'est pas défini
+    });
+
+    if (detailLoading) {
         return <p>Loading...</p>;
+    }
+
+    if (detailError) {
+        return <p>Error loading sample details</p>;
+    }
+
+    if (substrateLoading) {
+        return <p>Loading substrate data...</p>;
     }
 
     if (substrateError) {
@@ -41,13 +66,13 @@ const SubstrateLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
                 </tr>
                 </thead>
                 <tbody>
-                {substrateData.layers.map((layer: any) => (
-                    <tr key={layer.id_layer_thickness}>
+                {substrateData.layers.map((layer: any, layerIndex: number) => (
+                    <tr key={`layer-${layerIndex}`}>
                         <td>{layer.name}</td>
                         <td>{layer.layer_thickness}</td>
                         <td>
-                            {layer.layer_comp.map((comp: any) => (
-                                <div key={comp.id}>
+                            {layer.layer_comp.map((comp: any, compIndex: number) => (
+                                <div key={`comp-${layerIndex}-${compIndex}`}>
                                     {comp.element} {comp.percentage}%
                                 </div>
                             ))}
