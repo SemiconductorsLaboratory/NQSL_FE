@@ -1,5 +1,6 @@
 import { apiSlice } from '../services/apiSlice';
 
+
 const sampleApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         fetchSampleModelByName: builder.query({

@@ -1,71 +1,71 @@
-.container-sample{
+.container-sample {
     position: relative;
-    height: 100vh;
+    min-height: 100vh; /* Utiliser min-height pour permettre l'expansion */
     width: 100%;
     display: grid;
     grid-template-columns: 25% 1fr 1fr;
-    grid-template-rows: 70px 1fr 1fr;
+    grid-template-rows: 70px auto auto; /* Utiliser 'auto' pour que les lignes grandissent avec le contenu */
+    gap: 10px; /* Ajouter un écart entre les grilles pour la lisibilité */
 }
 
 .layout-sampleSearchbar {
     display: flex;
-    grid-row: 1/2;
-    grid-column: 1/2;
+    grid-row: 1 / 2;
+    grid-column: 1 / 2;
 }
 
 .layout-sampleFavorite {
     display: flex;
-    grid-row: 3/4;
-    grid-column: 1/2;
-
+    grid-row: 3 / 4;
+    grid-column: 1 / 2;
 }
 
-/*Parte Property */
+/*Partie Property */
 .layout-sampleProperty {
     height: 100%;
     width: 100%;
-    grid-row: 2/3;
-    grid-column: 1/2;
+    grid-row: 2 / 3;
+    grid-column: 1 / 2;
 }
 .column-sampleProperty {
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: repeat(5, auto); /* Utiliser 'auto' pour que chaque ligne s'ajuste à son contenu */
     grid-template-columns: 1fr 1fr;
 }
 .line {
     display: flex;
     background: skyblue;
-    grid-row: 2/3;
-    grid-column: 1/3;
+    grid-row: 2 / 3;
+    grid-column: 1 / 3;
 }
 .name-property {
-    grid-row: 3/4;
-    grid-column: 1/3;
-
+    grid-row: 3 / 4;
+    grid-column: 1 / 3;
 }
-.date-property{
-    grid-row: 3/4;
-    grid-column: 2/3;
+.date-property {
+    grid-row: 3 / 4;
+    grid-column: 2 / 3;
 }
 .description-property {
-    grid-row: 4/5;
-    grid-column: 1/3;
+    grid-row: 4 / 5;
+    grid-column: 1 / 3;
 }
-.user-property{
-    grid-row: 5/6;
-    grid-column: 1/3;
+.user-property {
+    grid-row: 5 / 6;
+    grid-column: 1 / 3;
 }
 
-
-/*Parte Data */
+/*Partie Data */
 .layout-sampleData {
     display: flex;
-    grid-row: 2/4;
-    grid-column: 2/4;
+    grid-row: 2 / 4;
+    grid-column: 2 / 4;
+    overflow: auto;
+    margin-bottom: 10px;
 }
 
 .layout-sampleName {
     display: flex;
-    grid-row: 1/2;
-    grid-column: 2/4;
+    grid-row: 1 / 2;
+    grid-column: 2 / 4;
 }

@@ -17,8 +17,9 @@ const SubstrateLayout: React.FC<{ children: React.ReactNode }> = ({ children }) 
     const [sampleName, setSampleName] = useState<string | null>(null);
 
     useEffect(() => {
-        if (detailData && detailData.prev_sample) {
-            setSampleName(detailData.prev_sample);
+        if (detailData && detailData.sample_list && detailData.sample_list.length > 0) {
+            // Utiliser le premier élément de sample_list pour le substrate
+            setSampleName(detailData.sample_list[0]);
         } else if (name) {
             setSampleName(null); // Si prev_sample n'est pas présent, on ne fait pas de requête pour le substrate
         }

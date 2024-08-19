@@ -2,13 +2,14 @@
 .container-data {
     display: flex;
     width: 99%;
-    height: 99%;
+    min-height: 100%;
     position: relative;
 }
 
 .sample-data, .sample-methode {
-    height: 100%;
+    min-height: 100%;
     overflow: auto;
+    flex-grow: 1;
 }
 
 .resizer {
@@ -21,8 +22,6 @@
 .sample-data {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    background: white;
-    padding: 10px;
 }
 
 .sample-methode {
@@ -30,6 +29,7 @@
     border-bottom-right-radius: 20px;
     background: white;
     padding: 10px;
+    flex-grow: 1;
 }
 
 /* New CSS */
@@ -43,7 +43,6 @@
 .substrate {
     border: 1px solid #ccc;
     padding: 10px;
-    margin-bottom: 10px;
     border-radius: 10px;
     box-shadow: 2px 2px 2px darkgray;
     cursor: pointer;
@@ -61,7 +60,6 @@
     box-shadow: 2px 2px 2px darkgray;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
     cursor: pointer;
 }
 
@@ -88,3 +86,21 @@
 .method-border-blue {
     border-left: 5px solid blue;
 }
+
+.dropdown-methode {
+    margin-left: 15px;
+}
+
+.dropdown-header{
+    cursor: pointer;
+}
+
+.container-prev-sample,
+.container-substrate,
+.container-sample-block{
+    padding: 10px;
+    background: white;
+    border-radius: 15px 0 0 15px;
+    margin-bottom: 3px;
+}
+

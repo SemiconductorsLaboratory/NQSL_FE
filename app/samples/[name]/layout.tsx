@@ -3,7 +3,7 @@
 import React, { ReactNode, useRef, useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import "../../../styles/layoutData.css";
-import { useDetailSampleQuery, useSubstrateSampleQuery } from "@/redux/features/sampleApiSlice";
+import { useDetailSampleQuery } from "@/redux/features/sampleApiSlice";
 import { Modal } from "@/components/Modal/Modal";
 import ModalExperiment from "@/components/Modal/Modal-Experiment";
 
@@ -41,40 +41,32 @@ const SubstrateBlock: React.FC<{ substrateName: string | null, onClick: () => vo
 );
 
 const MethodBlock: React.FC<{ item: any, onClick: () => void }> = ({ item, onClick }) => {
-    const getMethodClass = (method: string) => {
-        if (method === 'sem' || method === 'hrsem') {
+
+    const getMethodClass = (model: string) => {
+        if (model === 'sem' || model === 'hrsem') {
             return 'method-border-red';
-        } else if (method === 'afm' || method === 'kpafm') {
+        } else if (model === 'afm' || model === 'kpafm') {
             return 'method-border-blue';
         } else {
             return '';
         }
     };
 
+    // Utilisation de 'model' au lieu de 'method'
+    const modelName = item.model ? item.model.toUpperCase() : 'UNKNOWN MODEL';
+
     return (
         <div
-            className={`method-block ${getMethodClass(item.method)}`}
+            className={`method-block ${getMethodClass(item.model || '')}`}
             onClick={onClick}
         >
-            <h3>{item.method.toUpperCase()}</h3>
+            <h3>{modelName}</h3>
             <p className={"date-method"}>{item.created_at}</p>
-            <p className={"description-method"}>{item.description}</p>
         </div>
     );
 };
 
-const SampleList: React.FC<{ combinedData: any[], onClick: (method: string, id: string) => void, onAddNew: () => void }> = ({ combinedData, onClick, onAddNew }) => (
-    <>
-        {combinedData.map((item, index) => (
-            <MethodBlock key={index} item={item} onClick={() => onClick(item.method, item.id)} />
-        ))}
-        <div className={"method-block"} onClick={onAddNew}>
-            <p>+</p>
-        </div>
-    </>
-);
-
-const Dropdown: React.FC<{ title: string, items: any[] }> = ({ title, items }) => {
+const Dropdown: React.FC<{ title: string, items: any[], onClick: (model: string, id: string) => void }> = ({ title, items, onClick }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -86,12 +78,18 @@ const Dropdown: React.FC<{ title: string, items: any[] }> = ({ title, items }) =
             <div className="dropdown-header" onClick={toggleDropdown}>
                 <h3>{title}</h3>
             </div>
+            <div className={"line"}></div>
             {isOpen && (
                 <div className="dropdown-body">
-                    {items.map((item, index) => (
-                        <MethodBlock key={index} item={item} onClick={() => { /* Naviguer vers la méthode correspondante */ }} />
-                    ))}
-                    end
+                    <div className="dropdown-methode">
+                        {items.map((item, index) => (
+                            <MethodBlock
+                                key={index}
+                                item={item}
+                                onClick={() => onClick(item.model, item.id)}
+                            />
+                        ))}
+                    </div>
                 </div>
             )}
         </div>
@@ -105,10 +103,6 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
 
     const { data: detailData, error: detailError, isLoading: detailLoading } = useDetailSampleQuery(name, {
         skip: !name,
-    });
-
-    const { data: prevSampleData, error: prevSampleError, isLoading: prevSampleLoading } = useDetailSampleQuery(detailData?.prev_sample, {
-        skip: !detailData?.prev_sample,
     });
 
     const [columnWidth, setColumnWidth] = useState(50); // Width in percentage
@@ -126,22 +120,11 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
     const [substrateId, setSubstrateId] = useState<string | null>(null);
 
     useEffect(() => {
-        console.log('Raw API Data:', detailData); // Log des données brutes de l'API
         if (detailData) {
             if (detailData.substrate) {
-                console.log('Substrate Data:', detailData.substrate); // Log des détails du substrate
-                if (detailData.substrate.id) { // Utilisation de l'ID comme identifiant principal
-                    console.log('Substrate ID:', detailData.substrate.id); // Log de l'ID du substrate
-                    setSubstrateName(detailData.substrate.id.toString());
-                    setSubstrateId(detailData.substrate.id);
-                } else {
-                    console.log('Substrate ID is missing.');
-                }
-            } else {
-                console.log('Substrate is missing in detailData.');
+                setSubstrateName(detailData.substrate.id.toString());
+                setSubstrateId(detailData.substrate.id);
             }
-        } else {
-            console.log('No detail data available.');
         }
     }, [detailData]);
 
@@ -152,32 +135,7 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
     }
 
     if (!detailData) {
-        console.log('No detail data available.');
         return <p>No data available</p>;
-    }
-
-    let combinedData = [
-        ...(detailData.sem ? detailData.sem.map((item: any) => ({ ...item, method: 'sem', id: item.id })) : []),
-        ...(detailData.afm ? detailData.afm.map((item: any) => ({ ...item, method: 'afm', id: item.id })) : []),
-    ].sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-    // Ajouter les méthodes du prev_sample s'il existe et si ses données ont été récupérées
-    let prevSampleMethods: string | any[] = [];
-    if (prevSampleData) {
-        prevSampleMethods = [
-            ...(prevSampleData.sem ? prevSampleData.sem.map((item: any) => ({
-                ...item,
-                method: 'sem',
-                id: item.id,
-                fromPrevSample: true
-            })) : []),
-            ...(prevSampleData.afm ? prevSampleData.afm.map((item: any) => ({
-                ...item,
-                method: 'afm',
-                id: item.id,
-                fromPrevSample: true
-            })) : []),
-        ];
     }
 
     const handleClick = (method: string, id: string) => {
@@ -192,18 +150,49 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
         }
     };
 
+    const createDropdown = (sampleName: string, methods: any[]) => (
+        <div className="prev-sample-block" key={sampleName}>
+            <div className="dropdown-container">
+                <Dropdown title={sampleName} items={methods} onClick={handleClick} />
+            </div>
+        </div>
+    );
+
     return (
         <div className="container-data" ref={containerRef}>
             <div className="sample-data" style={{ width: `${columnWidth}%` }}>
-                {substrateName && (
-                    <SubstrateBlock substrateName={substrateName} onClick={handleSubstrateClick} />
-                )}
-                {prevSampleMethods.length > 0 && (
-                    <Dropdown title={`Prev Sample: ${detailData?.prev_sample}`} items={prevSampleMethods} />
-                )}
-                {combinedData.length > 0 && (
-                    <SampleList combinedData={combinedData} onClick={handleClick} onAddNew={() => setIsModalOpen(true)} />
-                )}
+                {/* Afficher le substrate */}
+                <div className={"container-substrate"}>
+                    {substrateName && (
+                        <SubstrateBlock substrateName={substrateName} onClick={handleSubstrateClick} />
+                    )}
+                </div>
+
+                {/* Afficher les dropdowns directement ici */}
+                <div className="container-prev-sample">
+                    {detailData.sample_list.map((sampleName: string, index: number) => {
+                        const methods = detailData.experiment_list[index];
+                        if (methods.length > 0 && index < detailData.sample_list.length - 1) {
+                            return createDropdown(sampleName, methods);
+                        }
+                        return null;
+                    })}
+                </div>
+
+                {/* Afficher le dernier bloc directement */}
+                <div className={"container-sample-block"}>
+                    {detailData.sample_list.length > 0 && (
+                        <div className="sample-block">
+                            {detailData.experiment_list[detailData.sample_list.length - 1].map((method: any) => (
+                                <MethodBlock
+                                    key={method.id}
+                                    item={method}
+                                    onClick={() => handleClick(method.model, method.id)}
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
             <Resizer onResize={handleResize} />
             <div className="sample-methode" style={{ width: `${100 - columnWidth}%` }}>

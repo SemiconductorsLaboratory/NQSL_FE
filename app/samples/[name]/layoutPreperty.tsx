@@ -32,9 +32,7 @@ const SampleDataLayout: React.FC = () => {
                 <div>
                     <p>description : {data.description}</p>
                     <p>date : {data.date}</p>
-                    <p>user : {data.user}</p>
-                    <p>substrate : {data.substrate}</p>
-                    <p>prev sample : {data.prev_sample}</p>
+                    <p className={"user"}>{data.user}</p>
                 </div>
             ) : (
                 <p>No data available</p>
