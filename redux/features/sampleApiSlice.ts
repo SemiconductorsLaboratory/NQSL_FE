@@ -11,12 +11,14 @@ const sampleApiSlice = apiSlice.injectEndpoints({
         }),
         DetailSample:builder.query({
             query: (name) => `samples/detail/${name}/`,
+
         }),
         SubstrateSample:builder.query({
             query: (name) => `samples/substrate/${name}/`,
         }),
         SemDetail:builder.query({
             query: (id) => `samples/sem/${id}`,
+
         })
     }),
 });
@@ -27,4 +29,5 @@ export const {
     useDetailSampleQuery,
     useSemDetailQuery,
     useSubstrateSampleQuery,
+    useDetailSampleQuery
 } = sampleApiSlice;
