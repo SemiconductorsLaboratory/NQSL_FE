@@ -6,7 +6,7 @@ const sampleApiSlice = apiSlice.injectEndpoints({
         fetchSampleModelByName: builder.query({
             query: (name) => `samples/description/${name}/`,
         }),
-        UserMachine: builder.query({
+        User: builder.query({
             query: () => `samples/user/`,
         }),
         DetailSample:builder.query({
@@ -19,15 +19,32 @@ const sampleApiSlice = apiSlice.injectEndpoints({
         SemDetail:builder.query({
             query: (id) => `samples/sem/${id}`,
 
-        })
+        }),
+        UserMachine:builder.query({
+            query: () => `samples/user-machine/`,
+
+        }),
+        UserMachineMe:builder.query({
+            query: (id) => `samples/user-machine/me`,
+
+        }),
+        SampleAdd:builder.mutation({
+            query: (data) => ({
+                url : "samples/init/",
+                method : "post",
+                body : data
+            }),
+        }),
     }),
 });
 
 export const {
     useFetchSampleModelByNameQuery,
-    useUserMachineQuery,
+    useUserQuery,
     useDetailSampleQuery,
     useSemDetailQuery,
     useSubstrateSampleQuery,
-    useDetailSampleQuery
+    useUserMachineQuery,
+    useUserMachineMeQuery,
+    useSampleAddMutation
 } = sampleApiSlice;

@@ -109,7 +109,7 @@ const authApiSlice = apiSlice.injectEndpoints({
 			}),
 		}),
 		getSamples: builder.query({
-			query: () => 'samples/',
+			query: () => 'samples/sample/',
 		}),
 		addSample: builder.mutation({
 			query: (sampleData) => ({

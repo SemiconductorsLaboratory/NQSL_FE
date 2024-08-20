@@ -26,7 +26,7 @@ export default function Navbar() {
 			});
 	};
 
-	const isSelected = (path: string) => (pathname === path ? true : false);
+	const isSelected = (path: string) => (pathname === path);
 
 	const authLinks = (isMobile: boolean) => (
 		<>

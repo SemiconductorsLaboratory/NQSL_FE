@@ -7,7 +7,7 @@ import ModalSampleAdd from "@/components/Modal/Modal-SampleAdd";
 import { Modal } from "@/components/Modal/Modal";
 
 const SearchbarComponent = () => {
-    const { data: samples, error, isLoading } = useGetSamplesQuery();
+    const { data: samples, error, isLoading, refetch } = useGetSamplesQuery(); // Ajout de refetch pour rafraîchir la liste
     const [query, setQuery] = useState('');
     const [selectedSample, setSelectedSample] = useState(null);
     const [errorState, setError] = useState(null);
@@ -24,6 +24,7 @@ const SearchbarComponent = () => {
             const response = await axios.get(`http://192.168.2.23:8000/api/samples/${sample.name}`);
             console.log('Sample details fetched from API:', response.data);
             setSelectedSample(response.data);
+            refetch();
         } catch (err) {
             console.error('Error fetching sample details:', err);
             setError('Error fetching sample details');
@@ -78,11 +79,11 @@ const SearchbarComponent = () => {
             </div>
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <ModalSampleAdd />
+                <ModalSampleAdd refetchSamples={refetch} /> {/* Passez refetch comme prop */}
             </Modal>
 
             {isLoading ? (
-                <p></p>
+                <p>Loading...</p>
             ) : error ? (
                 <p>Error loading samples</p>
             ) : (
