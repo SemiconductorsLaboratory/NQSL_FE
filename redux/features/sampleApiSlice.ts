@@ -2,6 +2,7 @@ import { apiSlice } from '../services/apiSlice';
 
 
 const sampleApiSlice = apiSlice.injectEndpoints({
+    overrideExisting: true,
     endpoints: builder => ({
         fetchSampleModelByName: builder.query({
             query: (name) => `samples/description/${name}/`,
@@ -30,9 +31,22 @@ const sampleApiSlice = apiSlice.injectEndpoints({
         }),
         SampleAdd:builder.mutation({
             query: (data) => ({
-                url : "samples/init/",
-                method : "post",
-                body : data
+                url: 'samples/init/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data,
+            }),
+        }),
+        SEMAdd:builder.mutation({
+            query: (data) => ({
+                url: 'samples/sem/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data,
             }),
         }),
     }),
@@ -46,5 +60,6 @@ export const {
     useSubstrateSampleQuery,
     useUserMachineQuery,
     useUserMachineMeQuery,
-    useSampleAddMutation
+    useSampleAddMutation,
+    useSEMAddMutation,
 } = sampleApiSlice;

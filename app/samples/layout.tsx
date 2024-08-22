@@ -8,16 +8,13 @@ import { useParams } from "next/navigation";
 import PropertyComponent from "./[name]/layoutPreperty";
 import SampleNameLayout from "./[name]/layoutName";
 
-import { Inter } from 'next/font/google'
-const inter = Inter({ subsets: ['latin'] })
-
 interface LayoutProps {
 	children: ReactNode;
 }
 
 const SamplePage: React.FC<LayoutProps> = ({ children }) => {
 	const params = useParams();
-	const { name } = params as { name?: string }; // Explicitly type the params to handle optional values
+	const { name } = params as { name?: string };
 
 	return (
 		<div id="__next">

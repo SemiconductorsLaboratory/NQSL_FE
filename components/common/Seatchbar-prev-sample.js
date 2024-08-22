@@ -3,7 +3,7 @@ import { useGetSamplesQuery } from '@/redux/features/authApiSlice';
 import Image from 'next/image';
 import '../../styles/Searchbar-prevSample.css';
 
-const SearchbarComponentPrevSample = () => {
+const SearchbarComponentPrevSample = ({ onSelect }) => {
     const { data: samples, error, isLoading } = useGetSamplesQuery();
     const [query, setQuery] = useState('');
     const [selectedSample, setSelectedSample] = useState(null);
@@ -19,11 +19,12 @@ const SearchbarComponentPrevSample = () => {
         setQuery(sample.name);
         setSelectedSample(sample);
         setIsListVisible(false); // Masque la liste après la sélection
+        onSelect(sample); // Appel du callback avec l'échantillon sélectionné
     };
 
     const handleClickOutsideSearchbar = (event) => {
         if (searchRef.current && !searchRef.current.contains(event.target)) {
-            setIsListVisible(false); // Masque la liste lorsque vous cliquez à l'extérieur
+            setIsListVisible(false);
         }
     };
 
