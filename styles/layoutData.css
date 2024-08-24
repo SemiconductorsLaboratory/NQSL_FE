@@ -53,6 +53,12 @@
     border-left: 5px solid orange;
 }
 
+.method-content {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
 .method-block {
     border: 1px solid #ccc;
     padding: 10px;
@@ -60,8 +66,26 @@
     border-radius: 10px;
     box-shadow: 2px 2px 2px darkgray;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr auto;
     cursor: pointer;
+}
+
+.method-block:hover {
+    background-color: #f5f5f5;
+}
+
+.method-right {
+    display: flex;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+.trash-icon {
+    display: none;
+}
+
+.method-right:hover .trash-icon {
+    display: block;
 }
 
 .date-method{

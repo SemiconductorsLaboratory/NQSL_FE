@@ -4,6 +4,7 @@ import React, { ReactNode, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import "../../../styles/layoutData.css";
 import { useDetailSampleQuery } from "@/redux/features/sampleApiSlice";
+
 import { Modal } from "@/components/Modal/Modal";
 import ModalExperiment from "@/components/Modal/Modal-Experiment";
 import MethodBlock from '@/components/LayoutData/MethodBlock';
@@ -68,9 +69,10 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
                     <MethodBlock
                         items={detailData.experiment_list[detailData.sample_list.length - 1]}
                         onClick={handleClick}
+                        sampleName={name}
                     />
                     <button onClick={() => setIsModalOpen(true)} className="open-modal-button">
-                        <div className="method-block-add">Add Method</div>
+                        <div className="method-block-add">bite</div>
                     </button>
                 </div>
 

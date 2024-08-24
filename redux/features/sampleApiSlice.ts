@@ -49,6 +49,24 @@ const sampleApiSlice = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        SEMDelete: builder.mutation({
+            query: (id) => ({
+                url: `/samples/sem/${id}/`,
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+        }),
+        AFMDelete: builder.mutation({
+            query: (id) => ({
+                url: `/samples/afm/${id}/`,
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }),
+        }),
     }),
 });
 
@@ -62,4 +80,6 @@ export const {
     useUserMachineMeQuery,
     useSampleAddMutation,
     useSEMAddMutation,
+    useSEMDeleteMutation,
+    useAFMDeleteMutation,
 } = sampleApiSlice;
