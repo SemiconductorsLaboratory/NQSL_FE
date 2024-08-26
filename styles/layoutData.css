@@ -60,6 +60,7 @@
 }
 
 .method-block {
+    background-color: white;
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 10px;
@@ -112,19 +113,10 @@
     border-left: 5px solid blue;
 }
 
-.dropdown-methode {
-    margin-left: 15px;
-}
-
-.dropdown-header{
-    cursor: pointer;
-}
-
 .container-prev-sample,
 .container-substrate,
 .container-next-sample {
     display: grid;
-    grid-template-columns: auto 1fr;
     padding: 10px;
     background: white;
     border-radius: 15px 0 0 15px;
@@ -144,8 +136,6 @@
 }
 
 .container-next-sample {
-    display: grid;
-    grid-template-columns: auto 1fr;
     padding: 10px;
     background: white;
     border-radius: 15px 0 0 15px;
@@ -183,4 +173,6 @@
     border-radius: 10px;
     box-shadow: 2px 2px 2px darkgray;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
 }

@@ -109,7 +109,6 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
         <div className="container-description">
             {isSem && <p>This is a SEM method</p>}
             <div>
-                <p>ID {data.id}</p>
                 <p>Method: {data.method}</p>
                 <p>Created At: {data.created_at}</p>
                 <h2>Run spec</h2>
@@ -117,7 +116,7 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
                 <p>Voltage: {data.voltage}</p>
                 <p>Current: {data.current}</p>
                 <h2>Description</h2>
-                <p>Description: {data.description}</p>
+                <p>{data.description}</p>
                 {data.image && <ImageDisplay url={data.image} />}
             </div>
             <canvas ref={canvasRef} style={{ width: '200px', height: '200px' }} />

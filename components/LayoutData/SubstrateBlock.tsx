@@ -20,11 +20,6 @@ const SubstrateSection: React.FC<SubstrateSectionProps> = ({ substrateName, subs
 
     return (
         <div className="container-substrate">
-            <div className="label">
-                S<br/>
-                u<br/>
-                b<br/>
-            </div>
             {substrateName && (
                 <div className={"substrate substrate-border"} onClick={handleSubstrateClick}>
                     <p>Substrate</p>

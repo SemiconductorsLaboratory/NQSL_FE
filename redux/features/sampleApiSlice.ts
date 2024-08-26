@@ -15,7 +15,7 @@ const sampleApiSlice = apiSlice.injectEndpoints({
 
         }),
         SubstrateSample:builder.query({
-            query: (name) => `samples/substrate/${name}/`,
+            query: (name) => `samples/substrate/detail/${name}/`,
         }),
         SemDetail:builder.query({
             query: (id) => `samples/sem/${id}`,
@@ -42,6 +42,16 @@ const sampleApiSlice = apiSlice.injectEndpoints({
         SEMAdd:builder.mutation({
             query: (data) => ({
                 url: 'samples/sem/',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: data,
+            }),
+        }),
+        AFMAdd:builder.mutation({
+            query: (data) => ({
+                url: 'samples/afm/',
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -78,8 +88,11 @@ export const {
     useSubstrateSampleQuery,
     useUserMachineQuery,
     useUserMachineMeQuery,
+
     useSampleAddMutation,
     useSEMAddMutation,
+    useAFMAddMutation,
+
     useSEMDeleteMutation,
     useAFMDeleteMutation,
 } = sampleApiSlice;

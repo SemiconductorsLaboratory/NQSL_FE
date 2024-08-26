@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { useSampleAddMutation, useUserMachineQuery } from "@/redux/features/sampleApiSlice";
 import { useGetSamplesQuery } from '@/redux/features/authApiSlice';
 import "./styles/Modal-SampleAdd.css";
@@ -47,6 +48,11 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
     const [isPrevSampleChecked, setIsPrevSampleChecked] = useState(false);
     const [isSubstrateChecked, setIsSubstrateChecked] = useState(false);
 
+    const [isLayerCompPopupOpen, setIsLayerCompPopupOpen] = useState(false);
+    const [layerIndexForComp, setLayerIndexForComp] = useState<number | null>(null);
+    const [newElement, setNewElement] = useState<number | string>('');
+    const [newPercentage, setNewPercentage] = useState<number | string>('');
+
     // @ts-ignore
     const { data: samples, isLoading: samplesLoading } = useGetSamplesQuery();
     // @ts-ignore
@@ -92,27 +98,44 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
         });
     };
 
-    const addLayerComp = (layerIndex: number) => {
-        const newLayers = [...substrate.layers];
-        newLayers[layerIndex].layer_comp.push({ element: 0, percentage: 0 });
-        setSubstrate({ ...substrate, layers: newLayers });
+    const openLayerCompPopup = (layerIndex: number) => {
+        setLayerIndexForComp(layerIndex);
+        setIsLayerCompPopupOpen(true);
+    };
+
+    const closeLayerCompPopup = () => {
+        setIsLayerCompPopupOpen(false);
+        setNewElement('');
+        setNewPercentage('');
+    };
+
+    const addLayerComp = () => {
+        if (layerIndexForComp !== null && newElement && newPercentage) {
+            const newLayers = [...substrate.layers];
+            newLayers[layerIndexForComp].layer_comp.push({
+                element: parseInt(String(newElement), 10),
+                percentage: parseFloat(String(newPercentage)),
+            });
+            setSubstrate({ ...substrate, layers: newLayers });
+            closeLayerCompPopup();
+        }
     };
 
     const handleSubmit = async () => {
         if (!selectedUser || !nameInput.trim() || !description.trim() || isNameTaken) {
+            console.log("Form validation failed");
             return;
         }
 
         const currentDate = new Date().toISOString();
 
-        // Combiner sampleData et substrateData dans une seule structure
         const payload = {
             sample: {
                 user_machine: Number(selectedUser),
                 name: nameInput,
                 description,
                 date_created: currentDate,
-                prev_sample: prevSample ? String(prevSample.id) : "", // Envoie une chaîne vide si prevSample est null
+                prev_sample: prevSample ? String(prevSample.id) : "",
             },
             substrate: isSubstrateChecked ? {
                 Company: substrate.Company,
@@ -130,10 +153,12 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             } : null
         };
 
-        console.log('Payload:', payload);
+        console.log("Payload to be sent:", payload);
 
         try {
             const response = await sampleAdd(payload).unwrap();
+            console.log("Response received:", response);
+
             alert('Sample added successfully');
             refetchSamples();
             setNameInput('');
@@ -144,7 +169,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             setIsPrevSampleChecked(false);
             setIsSubstrateChecked(false);
         } catch (error: any) {
-            console.error('Failed to add sample', error);
+            console.error('Failed to add sample:', error);
             alert('Failed to add sample. Please check your inputs and try again.');
         }
     };
@@ -200,7 +225,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                 checked={isPrevSampleChecked}
                                 onChange={() => setIsPrevSampleChecked(!isPrevSampleChecked)}
                             />
-                            <button className={"header-sample"}>Previous Sample</button>
+                            <p className={"header-sample"}>Previous Sample</p>
                         </div>
                         <div className={"line"}></div>
                         {isPrevSampleChecked && (
@@ -223,7 +248,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                 checked={isSubstrateChecked}
                                 onChange={() => setIsSubstrateChecked(!isSubstrateChecked)}
                             />
-                            <button className={"header-sample"}>Substrate</button>
+                            <p className={"header-sample"}>Substrate</p>
                         </div>
                         <div className={"line"}></div>
                         {isSubstrateChecked && (
@@ -250,58 +275,96 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                     />
                                 </label>
 
-                                {substrate.layers.map((layer, layerIndex) => (
-                                    <div key={layerIndex} className="layer-section">
-                                        <h3>Layer {layerIndex + 1}</h3>
-                                        <label>
-                                            Layer Name:
-                                            <input
-                                                type="text"
-                                                value={layer.name}
-                                                onChange={(e) => handleLayerChange(layerIndex, 'name', e.target.value)}
-                                                placeholder="Layer Name"
-                                                style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-                                            />
-                                        </label>
-                                        <label>
-                                            Layer Thickness:
-                                            <input
-                                                type="number"
-                                                value={layer.layer_thickness}
-                                                onChange={(e) => handleLayerChange(layerIndex, 'layer_thickness', e.target.value)}
-                                                placeholder="Layer Thickness"
-                                                style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-                                            />
-                                        </label>
-                                        {layer.layer_comp.map((comp, compIndex) => (
-                                            <div key={compIndex} className="layer-comp-section">
-                                                <label>
-                                                    Element:
-                                                    <input
-                                                        type="number"
-                                                        value={comp.element}
-                                                        onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'element', e.target.value)}
-                                                        placeholder="Element"
-                                                        style={{ width: '48%', padding: '10px', margin: '10px 0', display: 'inline-block', marginRight: '4%' }}
-                                                    />
-                                                </label>
-                                                <label>
-                                                    Percentage:
-                                                    <input
-                                                        type="number"
-                                                        value={comp.percentage}
-                                                        onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'percentage', e.target.value)}
-                                                        placeholder="Percentage"
-                                                        style={{ width: '48%', padding: '10px', margin: '10px 0', display: 'inline-block' }}
-                                                    />
-                                                </label>
-                                            </div>
-                                        ))}
-                                        <button type="button" onClick={() => addLayerComp(layerIndex)}>Add Layer Comp</button>
-                                    </div>
-                                ))}
+                                <table className="substrate-table">
+                                    <thead>
+                                    <tr>
+                                        <th>Layer Name</th>
+                                        <th>Layer Thickness (µm)</th>
+                                        <th>Layer Composition</th>
+                                        <th>Doped</th>
+                                        <th>Doped Percentage</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {substrate.layers.map((layer, layerIndex) => (
+                                        <tr key={layerIndex}>
+                                            <td>
+                                                <input
+                                                    type="text"
+                                                    value={layer.name}
+                                                    onChange={(e) => handleLayerChange(layerIndex, 'name', e.target.value)}
+                                                    placeholder="Layer Name"
+                                                    style={{ width: '100%', padding: '5px' }}
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    value={layer.layer_thickness}
+                                                    onChange={(e) => handleLayerChange(layerIndex, 'layer_thickness', e.target.value)}
+                                                    placeholder="Layer Thickness"
+                                                    style={{ width: '100%', padding: '5px' }}
+                                                />
+                                            </td>
+                                            <td>
+                                                {layer.layer_comp.map((comp, compIndex) => (
+                                                    <div key={`comp-${layerIndex}-${compIndex}`} className="layer-comp-section">
+                                                        <label>
+                                                            Element:
+                                                            <input
+                                                                type="number"
+                                                                value={comp.element}
+                                                                onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'element', e.target.value)}
+                                                                placeholder="Element"
+                                                                style={{ width: '48%', padding: '5px', marginRight: '4%' }}
+                                                            />
+                                                        </label>
+                                                        <label>
+                                                            Percentage:
+                                                            <input
+                                                                type="number"
+                                                                value={comp.percentage}
+                                                                onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'percentage', e.target.value)}
+                                                                placeholder="Percentage"
+                                                                style={{ width: '48%', padding: '5px' }}
+                                                            />
+                                                        </label>
+                                                    </div>
+                                                ))}
 
-                                <button type="button" onClick={addLayer}>Add Layer</button>
+                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)} style={{ background: 'none', border: 'none' }}>
+                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24} />
+                                                </button>
+                                            </td>
+                                            <td>
+                                                <select
+                                                    value={layer.doped || ''}
+                                                    onChange={(e) => handleLayerChange(layerIndex, 'doped', e.target.value)}
+                                                    style={{ width: '100%', padding: '5px' }}
+                                                >
+                                                    <option value="" disabled>Select</option>
+                                                    <option value="Yes">Yes</option>
+                                                    <option value="No">No</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="number"
+                                                    value={layer.doped_percentage || ''}
+                                                    onChange={(e) => handleLayerChange(layerIndex, 'doped_percentage', e.target.value)}
+                                                    placeholder="Doped Percentage"
+                                                    style={{ width: '100%', padding: '5px' }}
+                                                    disabled={!layer.doped || layer.doped === 'No'}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+
+                                <button type="button" onClick={addLayer} style={{ background: 'none', border: 'none' }}>
+                                    <Image src="/plus.png" alt="Add Layer" width={24} height={24} />
+                                </button>
                             </div>
                         )}
                     </div>
@@ -316,6 +379,38 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     Submit
                 </button>
             </div>
+
+            {isLayerCompPopupOpen && (
+                <div className="layer-comp-popup">
+                    <div className="popup-content">
+                        <h3>Add Layer Composition</h3>
+                        <label>
+                            Element:
+                            <input
+                                type="number"
+                                value={newElement}
+                                onChange={(e) => setNewElement(e.target.value)}
+                                placeholder="Element"
+                                style={{ width: '100%', padding: '5px', margin: '10px 0' }}
+                            />
+                        </label>
+                        <label>
+                            Percentage:
+                            <input
+                                type="number"
+                                value={newPercentage}
+                                onChange={(e) => setNewPercentage(e.target.value)}
+                                placeholder="Percentage"
+                                style={{ width: '100%', padding: '5px', margin: '10px 0' }}
+                            />
+                        </label>
+                        <div className="popup-actions">
+                            <button onClick={addLayerComp} style={{ marginRight: '10px' }}>Add</button>
+                            <button onClick={closeLayerCompPopup}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

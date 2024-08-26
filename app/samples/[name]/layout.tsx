@@ -12,9 +12,11 @@ import PrevSampleBlock from '@/components/LayoutData/PreSampleBlock';
 import SubstrateSection from '@/components/LayoutData/SubstrateBlock';
 import Resizer from '@/components/LayoutData/Resizer';
 import NextSampleBlock from '@/components/LayoutData/NextSampleBlock';
+import Image from "next/image";
 
 interface LayoutProps {
     children: ReactNode;
+
 }
 
 const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
@@ -62,7 +64,7 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
                         sampleList={detailData.sample_list}
                         experimentList={detailData.experiment_list}
                         onClick={handleClick}
-                    />
+                        sampleName={name}/>
                 )}
 
                 <div className="container-sample-block">
@@ -71,9 +73,16 @@ const SampleDataLayout: React.FC<LayoutProps> = ({ children }) => {
                         onClick={handleClick}
                         sampleName={name}
                     />
-                    <button onClick={() => setIsModalOpen(true)} className="open-modal-button">
-                        <div className="method-block-add">bite</div>
-                    </button>
+                    <div
+                        onClick={() => setIsModalOpen(true)}
+                        className="method-block-add">
+                        <Image
+                            src="/plus.png"
+                            width={25}
+                            height={25}
+                            alt="pen"
+                        />
+                    </div>
                 </div>
 
                 {detailData.next_sample_list.length > 0 && (
