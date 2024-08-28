@@ -1,0 +1,10 @@
+.dropdown-header{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    cursor: pointer;
+    padding-bottom: 5px;
+}
+
+.dropdown-methode {
+    margin-left: 15px;
+}

@@ -20,7 +20,12 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
     useEffect(() => {
         const loadPdf = async () => {
             if (!canvasRef.current) {
-                // Attendre que le canvas soit monté
+                console.log("Canvas not mounted yet.");
+                return;
+            }
+
+            if (!id) {
+                console.log("ID not available.");
                 return;
             }
 
@@ -28,20 +33,20 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
                 console.log("Attempting to load PDF...");
                 const loadingTask = pdfjsLib.getDocument('http://localhost:8000/media/File/Alexandre_Nadal_CV_low.pdf');
                 const pdf = await loadingTask.promise;
-                console.log("PDF loaded successfully:", pdf);
+
+                console.log("PDF loaded successfully");
 
                 const page = await pdf.getPage(1);
-                console.log("Page 1 loaded successfully:", page);
+                console.log("Page 1 loaded successfully");
 
-                const scale = 2;  // 2x résolution
+                const scale = 10;  // Rendre à 3x résolution pour plus de détails
                 const viewport = page.getViewport({ scale });
-                console.log("Viewport calculated:", viewport);
 
                 const canvas = canvasRef.current;
                 if (canvas) {
                     const context = canvas.getContext('2d');
                     if (context) {
-                        // Ajustez la taille du canvas en fonction de la nouvelle résolution
+                        // Rendre le canvas à haute résolution
                         canvas.height = viewport.height;
                         canvas.width = viewport.width;
 
@@ -53,32 +58,39 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
                         console.log("Rendering page...");
                         await page.render(renderContext).promise;
                         console.log("Page rendered successfully.");
+
+                        // Redimensionner le canvas en CSS pour un affichage net
+                        canvas.style.width = '150px';
+                        canvas.style.height = 'auto';  // Conserver le ratio d'aspect
                     } else {
                         console.error("Failed to get canvas context.");
                     }
-                } else {
-                    console.error("Canvas reference is null.");
                 }
             } catch (error) {
                 console.error('Error during PDF loading or rendering:', error);
             }
         };
 
-        // Charger le PDF une fois que le canvas est monté
-        if (canvasRef.current) {
+        if (!isLoading && canvasRef.current && id) {
+            console.log("Conditions met, loading PDF...");
             loadPdf();
+        } else {
+            console.log("Skipping PDF load, conditions not met.");
         }
-    }, [canvasRef]);
+    }, [canvasRef, id, isLoading]);
 
     if (!id) {
+        console.log("ID is missing.");
         return <p>Loading...</p>;
     }
 
     if (isLoading) {
+        console.log("Data is loading...");
         return <p>Loading...</p>;
     }
 
     if (error || !data) {
+        console.log("Error or missing data.");
         return (
             <div>
                 <p>Error loading data</p>
@@ -97,7 +109,6 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
         <div className="container-description">
             {isSem && <p>This is a SEM method</p>}
             <div>
-                <p>ID {data.id}</p>
                 <p>Method: {data.method}</p>
                 <p>Created At: {data.created_at}</p>
                 <h2>Run spec</h2>
@@ -105,13 +116,10 @@ const LayoutId: React.FC<LayoutProps> = ({ children }) => {
                 <p>Voltage: {data.voltage}</p>
                 <p>Current: {data.current}</p>
                 <h2>Description</h2>
-                <p>Description: {data.description}</p>
-                {data.image && <ImageDisplay url={data.image}/>}
+                <p>{data.description}</p>
+                {data.image && <ImageDisplay url={data.image} />}
             </div>
-
-            {/* Canvas pour afficher l'aperçu de la première page du PDF */}
-            <canvas ref={canvasRef} style={{width: '200px', height: '200px'}}/>
-
+            <canvas ref={canvasRef} style={{ width: '200px', height: '200px' }} />
         </div>
     );
 };

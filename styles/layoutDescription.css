@@ -51,3 +51,11 @@ ul {
     display: flex;
     width: 50%;
 }
+
+canvas {
+    width: 100px; /* Affichage à 100 pixels de large */
+    height: auto; /* Maintenir le ratio d'aspect */
+    image-rendering: crisp-edges; /* Pour tenter d'améliorer la netteté */
+    image-rendering: -moz-crisp-edges; /* Support pour Firefox */
+    image-rendering: pixelated; /* Pour des images à bords nets */
+}
