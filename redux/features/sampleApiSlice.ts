@@ -4,7 +4,7 @@ import { apiSlice } from '../services/apiSlice';
 const sampleApiSlice = apiSlice.injectEndpoints({
     overrideExisting: true,
     endpoints: builder => ({
-        fetchSampleModelByName: builder.query({
+        FetchSampleModelByName: builder.query({
             query: (name) => `samples/description/${name}/`,
         }),
         User: builder.query({
@@ -84,8 +84,8 @@ export const {
     useFetchSampleModelByNameQuery,
     useUserQuery,
     useDetailSampleQuery,
-    useSemDetailQuery,
     useSubstrateSampleQuery,
+    useSemDetailQuery,
     useUserMachineQuery,
     useUserMachineMeQuery,
 
