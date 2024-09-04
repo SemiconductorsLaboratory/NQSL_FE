@@ -1,15 +1,11 @@
-import { RequireAuth } from '@/components/utils';
-import type {Metadata} from "next";
+import React from 'react';
 
-interface Props {
-	children: React.ReactNode;
-}
-
-export const metadata: Metadata = {
-	title: 'NQSL | Dashboard',
-	description: 'Dashboard page',
+const AfmLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+	return (
+		<div>
+			{children}
+		</div>
+	);
 };
 
-export default function Layout({ children }: Props) {
-	return <RequireAuth>{children}</RequireAuth>;
-}
+export default AfmLayout;

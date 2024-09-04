@@ -28,7 +28,7 @@ const MethodBlock: React.FC<MethodBlockProps> = ({ items: initialItems, onClick,
     };
 
     const handleDelete = async (id: string, model: string) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this item ?");
+        const confirmDelete = window.confirm("Are you sure you want to delete this item?");
         if (!confirmDelete) {
             return;
         }
@@ -57,36 +57,42 @@ const MethodBlock: React.FC<MethodBlockProps> = ({ items: initialItems, onClick,
     return (
         <div className="sample-block">
             {items.map((item, index) => (
-                <div
-                    key={`${item.id}-${index}`}
-                    className={`method-block ${getMethodClass(item.model || '')}`}
-                    onClick={() => onClick(item.model, item.id)}
-                    style={{ position: 'relative' }}
-                >
-                    <div className="method-content">
-                        <h3>{item.model ? item.model.toUpperCase() : 'UNKNOWN MODEL'}</h3>
-                        <p className={"date-method"}>{item.created_at}</p>
+                item.id === 'no-method' ? ( // Vérification si l'élément est 'no-method'
+                    <div key={`${item.id}-${index}`} className="method-block no-method">
+                        <h3>No method</h3>
                     </div>
+                ) : (
                     <div
-                        className="method-right"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleDelete(item.id, item.model).then(() => {
-                                console.log(`Successfully deleted item with id: ${item.id}`);
-                            }).catch(error => {
-                                console.error('Error during deletion:', error);
-                            });
-                        }}
+                        key={`${item.id}-${index}`}
+                        className={`method-block ${getMethodClass(item.model || '')}`}
+                        onClick={() => onClick(item.model, item.id)}
+                        style={{ position: 'relative' }}
                     >
-                        <Image
-                            src="/trash.png"
-                            alt="Delete"
-                            width={25}
-                            height={25}
-                            className="trash-icon"
-                        />
+                        <div className="method-content">
+                            <h3>{item.model ? item.model.toUpperCase() : 'UNKNOWN MODEL'}</h3>
+                            <p className={"date-method"}>{item.created_at}</p>
+                        </div>
+                        <div
+                            className="method-right"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDelete(item.id, item.model).then(() => {
+                                    console.log(`Successfully deleted item with id: ${item.id}`);
+                                }).catch(error => {
+                                    console.error('Error during deletion:', error);
+                                });
+                            }}
+                        >
+                            <Image
+                                src="/trash.png"
+                                alt="Delete"
+                                width={25}
+                                height={25}
+                                className="trash-icon"
+                            />
+                        </div>
                     </div>
-                </div>
+                )
             ))}
         </div>
     );

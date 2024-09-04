@@ -25,10 +25,15 @@ const sampleApiSlice = apiSlice.injectEndpoints({
             query: () => `samples/user-machine/`,
 
         }),
+        ListElement:builder.query({
+            query: () => `/samples/elements/`,
+
+        }),
         UserMachineMe:builder.query({
             query: (id) => `samples/user-machine/me`,
 
         }),
+
         SampleAdd:builder.mutation({
             query: (data) => ({
                 url: 'samples/init/',
@@ -38,6 +43,11 @@ const sampleApiSlice = apiSlice.injectEndpoints({
                 },
                 body: data,
             }),
+        }),
+
+        methodList:builder.query({
+            query: () => `/samples/methodlist/`,
+
         }),
         SEMAdd:builder.mutation({
             query: (data) => ({
@@ -87,12 +97,14 @@ export const {
     useSemDetailQuery,
     useSubstrateSampleQuery,
     useUserMachineQuery,
+    useListElementQuery,
     useUserMachineMeQuery,
 
     useSampleAddMutation,
+
+    useMethodListQuery,
     useSEMAddMutation,
     useAFMAddMutation,
-
     useSEMDeleteMutation,
     useAFMDeleteMutation,
 } = sampleApiSlice;

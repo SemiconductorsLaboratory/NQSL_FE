@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useSampleAddMutation, useUserMachineQuery } from "@/redux/features/sampleApiSlice";
 import { useGetSamplesQuery } from '@/redux/features/authApiSlice';
+import PeriodicTable from '@/components/Modal/SampleAdd/PeriodicTable';
 import "./styles/Modal-SampleAdd.css";
 import SearchbarComponentPrevSample from "@/components/common/Seatchbar-prev-sample";
 
+// Définir les types de données
 type Sample = {
     id: string;
     name: string;
@@ -18,7 +20,7 @@ type LayerComp = {
 type Layer = {
     layer_thickness: number;
     name: string;
-    doped: string | null;
+    doped: number | null;
     doped_percentage: number | null;
     layer_comp: LayerComp[];
 };
@@ -50,7 +52,8 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
 
     const [isLayerCompPopupOpen, setIsLayerCompPopupOpen] = useState(false);
     const [layerIndexForComp, setLayerIndexForComp] = useState<number | null>(null);
-    const [newElement, setNewElement] = useState<number | string>('');
+    const [newElementId, setNewElementId] = useState<number | null>(null);
+    const [newElementSymbol, setNewElementSymbol] = useState<string>('');
     const [newPercentage, setNewPercentage] = useState<number | string>('');
 
     // @ts-ignore
@@ -105,15 +108,19 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
 
     const closeLayerCompPopup = () => {
         setIsLayerCompPopupOpen(false);
-        setNewElement('');
         setNewPercentage('');
     };
 
+    const handleElementSelect = (elementData: { id: number; symbol: string }) => {
+        setNewElementId(elementData.id);
+        setNewElementSymbol(elementData.symbol);
+    };
+
     const addLayerComp = () => {
-        if (layerIndexForComp !== null && newElement && newPercentage) {
+        if (layerIndexForComp !== null && newElementId && newPercentage) {
             const newLayers = [...substrate.layers];
             newLayers[layerIndexForComp].layer_comp.push({
-                element: parseInt(String(newElement), 10),
+                element: newElementId,
                 percentage: parseFloat(String(newPercentage)),
             });
             setSubstrate({ ...substrate, layers: newLayers });
@@ -127,50 +134,61 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             return;
         }
 
-        const currentDate = new Date().toISOString();
+        // Log the current state of inputs before payload creation
+        console.log("Selected User:", selectedUser);
+        console.log("Name Input:", nameInput);
+        console.log("Description:", description);
+        console.log("Date Created:", substrate.date_created);
+        console.log("Previous Sample:", prevSample);
+
+        // Log the substrate state
+        console.log("Substrate state:", substrate);
 
         const payload = {
             sample: {
                 user_machine: Number(selectedUser),
                 name: nameInput,
                 description,
-                date_created: currentDate,
+                date_created: substrate.date_created,
                 prev_sample: prevSample ? String(prevSample.id) : "",
             },
-            substrate: isSubstrateChecked ? {
-                Company: substrate.Company,
-                date_created: substrate.date_created,
-                layers: substrate.layers.map(layer => ({
-                    layer_thickness: parseFloat(String(layer.layer_thickness)),
-                    name: layer.name,
-                    doped: layer.doped,
-                    doped_percentage: layer.doped_percentage,
-                    layer_comp: layer.layer_comp.map(comp => ({
-                        element: parseInt(String(comp.element), 10),
-                        percentage: parseFloat(String(comp.percentage))
-                    }))
-                }))
-            } : null
+            substrate: isSubstrateChecked
+                ? {
+                    Company: substrate.Company,
+                    date_created: substrate.date_created,
+                    layers: substrate.layers.map((layer) => ({
+                        layer_thickness: parseFloat(String(layer.layer_thickness)),
+                        name: layer.name,
+                        doped: layer.doped !== null ? parseInt(String(layer.doped), 10) : null, // Convert to integer if not null
+                        doped_percentage: layer.doped_percentage !== null ? parseFloat(String(layer.doped_percentage)) : null, // Ensure it's a valid number
+                        layer_comp: layer.layer_comp.map((comp) => ({
+                            element: parseInt(String(comp.element), 10), // Already a valid integer
+                            percentage: parseFloat(String(comp.percentage)), // Already a valid float
+                        })),
+                    })),
+                }
+                : null,
         };
 
-        console.log("Payload to be sent:", payload);
+        // Log the payload to see what is being sent to the server
+        console.log("Payload to be sent:", JSON.stringify(payload, null, 2));
 
         try {
             const response = await sampleAdd(payload).unwrap();
             console.log("Response received:", response);
 
-            alert('Sample added successfully');
+            alert("Sample added successfully");
             refetchSamples();
-            setNameInput('');
-            setDescription('');
+            setNameInput("");
+            setDescription("");
             setSelectedUser(null);
             setPrevSample(null);
-            setSubstrate({ Company: '', date_created: '', layers: [] });
+            setSubstrate({ Company: "", date_created: "", layers: [] });
             setIsPrevSampleChecked(false);
             setIsSubstrateChecked(false);
         } catch (error: any) {
-            console.error('Failed to add sample:', error);
-            alert('Failed to add sample. Please check your inputs and try again.');
+            console.error("Failed to add sample:", error);
+            alert("Failed to add sample. Please check your inputs and try again.");
         }
     };
 
@@ -182,27 +200,45 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
     return (
         <div className="container-modalAdd">
             <div className="sample-info">
-                <h2>Date: {currentDate}</h2>
                 <input
                     className={"name-input"}
                     type="text"
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
                     placeholder="Enter name"
-                    style={{ width: '100%', padding: '10px', margin: '10px 0', borderColor: isNameTaken ? 'red' : 'initial' }}
+                    style={{
+                        width: '100%',
+                        padding: '10px',
+                        margin: '10px 0',
+                        borderColor: isNameTaken ? 'red' : 'initial'
+                    }}
                 />
-                {isNameTaken && <p style={{ color: 'red' }}>This name is already taken.</p>}
+                {isNameTaken && <p style={{color: 'red'}}>This name is already taken.</p>}
 
                 <select
                     value={selectedUser || ''}
                     onChange={handleUserSelect}
-                    style={{ width: '100%', padding: '10px', margin: '10px 0' }}
+                    style={{width: '100%', padding: '10px', margin: '10px 0'}}
                 >
                     <option value="" disabled>Select a user</option>
-                    {userList && userList.length > 0 && userList.map((user: { id: string, name: string }, index: number) => (
+                    {userList && userList.length > 0 && userList.map((user: {
+                        id: string,
+                        name: string
+                    }, index: number) => (
                         <option key={index} value={user.id}>{user.name}</option>
                     ))}
                 </select>
+
+                <label>
+                    Date Created:
+                    <input
+                        type="date"
+                        value={substrate.date_created}
+                        onChange={(e) => setSubstrate({...substrate, date_created: e.target.value})}
+                        placeholder="Date Created"
+                        style={{width: '100%', padding: '10px', margin: '10px 0'}}
+                    />
+                </label>
 
                 <h2>Description</h2>
                 <textarea
@@ -210,7 +246,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
                     rows={5}
-                    style={{ width: '100%' }}
+                    style={{width: '100%'}}
                 />
             </div>
 
@@ -219,18 +255,23 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             <div className="sample-prevSample">
                 <div className="sections-container">
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
                             <input
                                 type="checkbox"
                                 checked={isPrevSampleChecked}
-                                onChange={() => setIsPrevSampleChecked(!isPrevSampleChecked)}
+                                onChange={() => {
+                                    setIsPrevSampleChecked(!isPrevSampleChecked);
+                                    if (!isPrevSampleChecked) {
+                                        setIsSubstrateChecked(false);
+                                    }
+                                }}
                             />
                             <p className={"header-sample"}>Previous Sample</p>
                         </div>
                         <div className={"line"}></div>
                         {isPrevSampleChecked && (
                             <div className="section-content">
-                                <SearchbarComponentPrevSample onSelect={handlePrevSampleSelect} />
+                                <SearchbarComponentPrevSample onSelect={handlePrevSampleSelect}/>
                             </div>
                         )}
                     </div>
@@ -242,35 +283,29 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             <div className="sample-substrate">
                 <div className="sections-container">
                     <div>
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{display: 'flex', alignItems: 'center'}}>
                             <input
                                 type="checkbox"
                                 checked={isSubstrateChecked}
-                                onChange={() => setIsSubstrateChecked(!isSubstrateChecked)}
+                                onChange={() => {
+                                    setIsSubstrateChecked(!isSubstrateChecked);
+                                    if (!isSubstrateChecked) {
+                                        setIsPrevSampleChecked(false);
+                                    }
+                                }}
                             />
                             <p className={"header-sample"}>Substrate</p>
                         </div>
                         <div className={"line"}></div>
                         {isSubstrateChecked && (
                             <div className="section-content">
-                                <h3>Substrate Information</h3>
                                 <label>
-                                    Company:
+                                Company:
                                     <input
                                         type="text"
                                         value={substrate.Company}
                                         onChange={(e) => setSubstrate({ ...substrate, Company: e.target.value })}
                                         placeholder="Company"
-                                        style={{ width: '100%', padding: '10px', margin: '10px 0' }}
-                                    />
-                                </label>
-                                <label>
-                                    Date Created:
-                                    <input
-                                        type="date"
-                                        value={substrate.date_created}
-                                        onChange={(e) => setSubstrate({ ...substrate, date_created: e.target.value })}
-                                        placeholder="Date Created"
                                         style={{ width: '100%', padding: '10px', margin: '10px 0' }}
                                     />
                                 </label>
@@ -281,8 +316,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                         <th>Layer Name</th>
                                         <th>Layer Thickness (µm)</th>
                                         <th>Layer Composition</th>
-                                        <th>Doped</th>
-                                        <th>Doped Percentage</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -308,62 +341,37 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                             </td>
                                             <td>
                                                 {layer.layer_comp.map((comp, compIndex) => (
-                                                    <div key={`comp-${layerIndex}-${compIndex}`} className="layer-comp-section">
+                                                    <div key={`comp-${layerIndex}-${compIndex}`}
+                                                         className="layer-comp-section">
                                                         <label>
-                                                            Element:
-                                                            <input
-                                                                type="number"
-                                                                value={comp.element}
-                                                                onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'element', e.target.value)}
-                                                                placeholder="Element"
-                                                                style={{ width: '48%', padding: '5px', marginRight: '4%' }}
-                                                            />
+                                                            <p className={"elements"}
+                                                            >{newElementSymbol}</p>
                                                         </label>
                                                         <label>
-                                                            Percentage:
                                                             <input
+                                                                className={"input-elementsPercentage"}
                                                                 type="number"
                                                                 value={comp.percentage}
                                                                 onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'percentage', e.target.value)}
                                                                 placeholder="Percentage"
-                                                                style={{ width: '48%', padding: '5px' }}
                                                             />
                                                         </label>
                                                     </div>
                                                 ))}
 
-                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)} style={{ background: 'none', border: 'none' }}>
-                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24} />
+
+                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)}
+                                                        style={{background: 'none', border: 'none'}}>
+                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24}/>
                                                 </button>
-                                            </td>
-                                            <td>
-                                                <select
-                                                    value={layer.doped || ''}
-                                                    onChange={(e) => handleLayerChange(layerIndex, 'doped', e.target.value)}
-                                                    style={{ width: '100%', padding: '5px' }}
-                                                >
-                                                    <option value="" disabled>Select</option>
-                                                    <option value="Yes">Yes</option>
-                                                    <option value="No">No</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    value={layer.doped_percentage || ''}
-                                                    onChange={(e) => handleLayerChange(layerIndex, 'doped_percentage', e.target.value)}
-                                                    placeholder="Doped Percentage"
-                                                    style={{ width: '100%', padding: '5px' }}
-                                                    disabled={!layer.doped || layer.doped === 'No'}
-                                                />
                                             </td>
                                         </tr>
                                     ))}
                                     </tbody>
                                 </table>
 
-                                <button type="button" onClick={addLayer} style={{ background: 'none', border: 'none' }}>
-                                    <Image src="/plus.png" alt="Add Layer" width={24} height={24} />
+                                <button type="button" onClick={addLayer} style={{background: 'none', border: 'none'}}>
+                                    <Image src="/plus.png" alt="Add Layer" width={24} height={24}/>
                                 </button>
                             </div>
                         )}
@@ -383,17 +391,8 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             {isLayerCompPopupOpen && (
                 <div className="layer-comp-popup">
                     <div className="popup-content">
-                        <h3>Add Layer Composition</h3>
-                        <label>
-                            Element:
-                            <input
-                                type="number"
-                                value={newElement}
-                                onChange={(e) => setNewElement(e.target.value)}
-                                placeholder="Element"
-                                style={{ width: '100%', padding: '5px', margin: '10px 0' }}
-                            />
-                        </label>
+                        <PeriodicTable onSelectElement={handleElementSelect} />
+                        <p>Selected Element: {newElementSymbol}</p>
                         <label>
                             Percentage:
                             <input
@@ -401,7 +400,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                 value={newPercentage}
                                 onChange={(e) => setNewPercentage(e.target.value)}
                                 placeholder="Percentage"
-                                style={{ width: '100%', padding: '5px', margin: '10px 0' }}
                             />
                         </label>
                         <div className="popup-actions">
