@@ -201,6 +201,11 @@ select, textarea {
 }
 
 .popup-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.popup-actions2 {
     display: flex;
     justify-content: flex-end;
 }

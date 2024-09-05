@@ -344,8 +344,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                                     <div key={`comp-${layerIndex}-${compIndex}`}
                                                          className="layer-comp-section">
                                                         <label>
-                                                            <p className={"elements"}
-                                                            >{newElementSymbol}</p>
+                                                            <p className={"elements"}>{newElementSymbol}</p>
                                                         </label>
                                                         <label>
                                                             <input
@@ -358,8 +357,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                                         </label>
                                                     </div>
                                                 ))}
-
-
                                                 <button type="button" onClick={() => openLayerCompPopup(layerIndex)}
                                                         style={{background: 'none', border: 'none'}}>
                                                     <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24}/>
@@ -392,20 +389,23 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                 <div className="layer-comp-popup">
                     <div className="popup-content">
                         <PeriodicTable onSelectElement={handleElementSelect} />
-                        <p>Selected Element: {newElementSymbol}</p>
                         <label>
-                            Percentage:
-                            <input
-                                type="number"
-                                value={newPercentage}
-                                onChange={(e) => setNewPercentage(e.target.value)}
-                                placeholder="Percentage"
-                            />
+                            <div className="popup-actions">
+                                <div className="percentage">
+                                    Percentage:
+                                    <input
+                                        type="number"
+                                        value={newPercentage}
+                                        onChange={(e) => setNewPercentage(e.target.value)}
+                                        placeholder="Percentage"
+                                    />
+                                </div>
+                                <div className="popup-actions2">
+                                    <button onClick={addLayerComp} style={{marginRight: '10px'}}>Add</button>
+                                    <button onClick={closeLayerCompPopup}>Cancel</button>
+                                </div>
+                            </div>
                         </label>
-                        <div className="popup-actions">
-                            <button onClick={addLayerComp} style={{ marginRight: '10px' }}>Add</button>
-                            <button onClick={closeLayerCompPopup}>Cancel</button>
-                        </div>
                     </div>
                 </div>
             )}

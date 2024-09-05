@@ -48,7 +48,7 @@ const PeriodicTable: React.FC<PeriodicTableProps> = ({ onSelectElement }) => {
             {elements.map((element) => (
                 <div
                     key={element.atomic_number}
-                    className={`element ${selectedElement === element.atomic_number ? 'selected' : ''}`} // Ajouter la classe 'selected' si l'élément est sélectionné
+                    className={`element ${selectedElement === element.atomic_number ? 'selected' : ''}`}
                     onClick={() => handleElementClick(element)}
                     style={{
                         gridRow: element.period,
