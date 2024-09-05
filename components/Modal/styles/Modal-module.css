@@ -9,10 +9,24 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* Ajouté */
+    overflow: hidden;
+}
+
+.modal-header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    margin: 5px;
+}
+
+.modal-header-name{
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.5rem;
 }
 
 .modal-content {
+    padding: 10px;
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
