@@ -13,6 +13,7 @@ type Sample = {
 
 type LayerComp = {
     element: number;
+    symbol: string;
     percentage: number;
 };
 
@@ -85,12 +86,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
         setSubstrate({ ...substrate, layers: newLayers });
     };
 
-    const handleLayerCompChange = (layerIndex: number, compIndex: number, field: keyof LayerComp, value: any) => {
-        const newLayers = [...substrate.layers];
-        newLayers[layerIndex].layer_comp[compIndex] = { ...newLayers[layerIndex].layer_comp[compIndex], [field]: value };
-        setSubstrate({ ...substrate, layers: newLayers });
-    };
-
     const addLayer = () => {
         setSubstrate({
             ...substrate,
@@ -106,6 +101,8 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
     const closeLayerCompPopup = () => {
         setIsLayerCompPopupOpen(false);
         setNewPercentage('');
+        setNewElementId(null);
+        setNewElementSymbol('');
     };
 
     const handleElementSelect = (elementData: { id: number; symbol: string }) => {
@@ -113,11 +110,21 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
         setNewElementSymbol(elementData.symbol);
     };
 
+    const handleLayerCompChange = (layerIndex: number, compIndex: number, field: keyof LayerComp, value: any) => {
+        const newLayers = [...substrate.layers];
+        newLayers[layerIndex].layer_comp[compIndex] = {
+            ...newLayers[layerIndex].layer_comp[compIndex],
+            [field]: value,
+        };
+        setSubstrate({ ...substrate, layers: newLayers });
+    };
+
     const addLayerComp = () => {
         if (layerIndexForComp !== null && newElementId && newPercentage) {
             const newLayers = [...substrate.layers];
             newLayers[layerIndexForComp].layer_comp.push({
                 element: newElementId,
+                symbol: newElementSymbol,
                 percentage: parseFloat(String(newPercentage)),
             });
             setSubstrate({ ...substrate, layers: newLayers });
@@ -156,18 +163,18 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     layers: substrate.layers.map((layer) => ({
                         layer_thickness: parseFloat(String(layer.layer_thickness)),
                         name: layer.name,
-                        doped: layer.doped !== null ? parseInt(String(layer.doped), 10) : null, // Convert to integer if not null
-                        doped_percentage: layer.doped_percentage !== null ? parseFloat(String(layer.doped_percentage)) : null, // Ensure it's a valid number
+                        doped: layer.doped !== null ? parseInt(String(layer.doped), 10) : null,
+                        doped_percentage: layer.doped_percentage !== null ? parseFloat(String(layer.doped_percentage)) : null,
                         layer_comp: layer.layer_comp.map((comp) => ({
-                            element: parseInt(String(comp.element), 10), // Already a valid integer
-                            percentage: parseFloat(String(comp.percentage)), // Already a valid float
+                            element: parseInt(String(comp.element), 10),
+                            symbol: comp.symbol,
+                            percentage: parseFloat(String(comp.percentage)),
                         })),
                     })),
                 }
                 : null,
         };
 
-        // Log the payload to see what is being sent to the server
         console.log("Payload to be sent:", JSON.stringify(payload, null, 2));
 
         try {
@@ -188,7 +195,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
             alert("Failed to add sample. Please check your inputs and try again.");
         }
     };
-
 
     if (userLoading || samplesLoading || isSubmitting) {
         return <p>Loading...</p>;
@@ -338,10 +344,9 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                             </td>
                                             <td>
                                                 {layer.layer_comp.map((comp, compIndex) => (
-                                                    <div key={`comp-${layerIndex}-${compIndex}`}
-                                                         className="layer-comp-section">
+                                                    <div key={`comp-${layerIndex}-${compIndex}`} className="layer-comp-section">
                                                         <label>
-                                                            <p className={"elements"}>{newElementSymbol}</p>
+                                                            <p className={"elements"}>{comp.symbol}</p> {/* Utilisez `comp.symbol` ici */}
                                                         </label>
                                                         <label>
                                                             <input

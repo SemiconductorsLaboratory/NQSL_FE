@@ -87,6 +87,10 @@ const sampleApiSlice = apiSlice.injectEndpoints({
                 },
             }),
         }),
+        MeetingList:builder.query({
+            query: () => `/dashboard/meeting/`,
+
+        }),
     }),
 });
 
@@ -107,4 +111,6 @@ export const {
     useAFMAddMutation,
     useSEMDeleteMutation,
     useAFMDeleteMutation,
+
+    useMeetingListQuery,
 } = sampleApiSlice;
