@@ -21,5 +21,12 @@
 
 .user {
     background: white;
+    font-weight: bold;
+    font-size: 0.9em;
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
     display: flex;
+    justify-content: center;
+    align-items: center;
 }
