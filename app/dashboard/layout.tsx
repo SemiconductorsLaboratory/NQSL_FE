@@ -1,11 +1,12 @@
 import React from 'react';
+import "@/styles/Dashboard.css"
 
-const AfmLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const Dashboard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 	return (
-		<div>
-			{children}
+		<div className="Dashboard">
+			Meeting
 		</div>
 	);
 };
 
-export default AfmLayout;
+export default Dashboard;

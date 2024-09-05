@@ -6,7 +6,6 @@ import PeriodicTable from '@/components/Modal/SampleAdd/PeriodicTable';
 import "./styles/Modal-SampleAdd.css";
 import SearchbarComponentPrevSample from "@/components/common/Seatchbar-prev-sample";
 
-// Définir les types de données
 type Sample = {
     id: string;
     name: string;
@@ -61,8 +60,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
     // @ts-ignore
     const { data: userList, isLoading: userLoading } = useUserMachineQuery();
     const [sampleAdd, { isLoading: isSubmitting }] = useSampleAddMutation();
-
-    const currentDate = new Date().toLocaleDateString();
 
     const handleUserSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setSelectedUser(event.target.value);
