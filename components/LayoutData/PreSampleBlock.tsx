@@ -9,19 +9,24 @@ interface PrevSampleBlockProps {
 }
 
 const PrevSampleBlock: React.FC<PrevSampleBlockProps> = ({ sampleList, experimentList, onClick }) => {
-    const createDropdown = (sampleName: string, methods: any[]) => (
-        <div className="prev-sample-block" key={sampleName}>
-            <div className="dropdown-container">
-                <Dropdown title={sampleName} items={methods} onClick={onClick} sampleName={sampleName}/>
+    const createDropdown = (sampleName: string, methods: any[]) => {
+
+        const itemsToDisplay = methods.length > 0 ? methods : [{ id: 'no-method', name: 'No method', nonClickable: true }];
+
+        return (
+            <div className="prev-sample-block" key={sampleName}>
+                <div className="dropdown-container">
+                    <Dropdown title={sampleName} items={itemsToDisplay} onClick={onClick} sampleName={sampleName} />
+                </div>
             </div>
-        </div>
-    );
+        );
+    };
 
     return (
         <div className="container-prev-sample">
             {sampleList.map((sampleName: string, index: number) => {
-                const methods = experimentList[index];
-                if (methods.length > 0 && index < sampleList.length - 1) {
+                if (index < sampleList.length - 1) {
+                    const methods = experimentList[index] || [];
                     return createDropdown(sampleName, methods);
                 }
                 return null;

@@ -1,4 +1,5 @@
 .container-experiment {
+    text-transform: uppercase;
     display: grid;
     grid-template-columns: 20% 1fr;
     grid-template-rows: 10% 1fr;
@@ -8,14 +9,23 @@
 
 .experiment {
     grid-area: 1/1/3/2;
-    background: orange;
+    padding: 5px;
 }
 
 .header-experiment {
-    background: crimson;
+    display: flex;
+    text-transform: uppercase;
+    font-weight: bold;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 2em;
     grid-area: 1/2/2/2;
 }
 
 .input-experiment {
-    background: cornflowerblue;
+    display: flex;
+    width: 100%;
+    height: 100%;
 }

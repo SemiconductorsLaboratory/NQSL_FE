@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import MethodBlock from './MethodBlock';
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import "./styles/Dropdown.css"
-
+import "./styles/Dropdown.css";
 
 interface DropdownProps {
     title: string;
@@ -20,7 +19,8 @@ const Dropdown: React.FC<DropdownProps> = ({ title, items, onClick, sampleName }
         setIsOpen(!isOpen);
     };
 
-    const toggleLink = () => {
+    const toggleLink = (e: React.MouseEvent) => {
+        e.stopPropagation();
         router.push(`/samples/${sampleName}/`);
     };
 
@@ -34,13 +34,14 @@ const Dropdown: React.FC<DropdownProps> = ({ title, items, onClick, sampleName }
                     width={25}
                     height={25}
                     alt="pen"
+                    className="dropdown-link-icon"
                 />
             </div>
             <div className={"line"}></div>
             {isOpen && (
                 <div className="dropdown-body">
                     <div className="dropdown-methode">
-                        <MethodBlock items={items} onClick={onClick}  sampleName={sampleName}/>
+                        <MethodBlock items={items} onClick={onClick} sampleName={sampleName} />
                     </div>
                 </div>
             )}
