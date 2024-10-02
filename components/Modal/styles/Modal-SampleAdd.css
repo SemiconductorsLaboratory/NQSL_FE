@@ -141,23 +141,6 @@
     cursor: pointer;
 }
 
-input {
-    background: transparent;
-    box-shadow: none;
-    padding: 5px;
-    font-size: 1em;
-}
-
-input::placeholder {
-    color: #ccc;
-}
-
-input:focus {
-    outline: none;
-    box-shadow: none;
-    border: 0;
-}
-
 select, textarea {
     outline: none;
     background: none;
@@ -223,4 +206,72 @@ select, textarea {
 
 .popup-actions button:hover {
     background-color: #45a049;
+}
+
+.name-input {
+    margin-bottom: 10px;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    outline: none;
+    border-color: white;
+    box-shadow: 2px 2px 4px darkgray;
+}
+.name-input:focus {
+    box-shadow: 2px 2px 4px darkgray;
+    outline: none;
+    border-color: white;
+}
+
+.name-and-date{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+}
+.date-input {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    outline: none;
+    border-color: white;
+    box-shadow: 2px 2px 4px darkgray;
+}
+.date-input:focus {
+    box-shadow: 2px 2px 4px darkgray;
+    outline: none;
+    border-color: white;
+}
+
+.input-description {
+    margin-top: 10px;
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    outline: none;
+    border-color: white;
+    box-shadow: 2px 2px 4px darkgray;
+}
+.input-description:focus {
+    box-shadow: 2px 2px 4px darkgray;
+    outline: none;
+    border-color: white;
+}
+
+.company-header{
+    display: flex;
+    justify-content: center;
+}
+
+.company-input {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    outline: none;
+    border-color: white;
+    box-shadow: 2px 2px 4px darkgray;
+}
+.company-input:focus {
+    box-shadow: 2px 2px 4px darkgray;
+    outline: none;
+    border-color: white;
 }
