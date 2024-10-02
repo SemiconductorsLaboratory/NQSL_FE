@@ -132,6 +132,17 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
         }
     };
 
+    const removeLayer = (layerIndex: number) => {
+        const updatedLayers = substrate.layers.filter((_, index) => index !== layerIndex);
+        setSubstrate({ ...substrate, layers: updatedLayers });
+    };
+
+    const removeLayerComp = (layerIndex: number, compIndex: number) => {
+        const updatedLayers = [...substrate.layers];
+        updatedLayers[layerIndex].layer_comp = updatedLayers[layerIndex].layer_comp.filter((_, index) => index !== compIndex);
+        setSubstrate({ ...substrate, layers: updatedLayers });
+    };
+
     const handleSubmit = async () => {
         if (!selectedUser || !nameInput.trim() || !description.trim() || isNameTaken) {
             console.log("Form validation failed");
@@ -209,47 +220,43 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     value={nameInput}
                     onChange={(e) => setNameInput(e.target.value)}
                     placeholder="Enter name"
-                    style={{
-                        width: '100%',
-                        padding: '10px',
-                        margin: '10px 0',
-                        borderColor: isNameTaken ? 'red' : 'initial'
-                    }}
                 />
                 {isNameTaken && <p style={{color: 'red'}}>This name is already taken.</p>}
 
-                <select
-                    value={selectedUser || ''}
-                    onChange={handleUserSelect}
-                    style={{width: '100%', padding: '10px', margin: '10px 0'}}
-                >
-                    <option value="" disabled>Select a user</option>
-                    {userList && userList.length > 0 && userList.map((user: {
-                        id: string,
-                        name: string
-                    }, index: number) => (
-                        <option key={index} value={user.id}>{user.name}</option>
-                    ))}
-                </select>
+                <div className={"name-and-date"}>
+                    <>
+                        <select
+                            className={"date-input"}
+                            value={selectedUser || ''}
+                            onChange={handleUserSelect}
+                        >
+                            <option value="" disabled>Select a user</option>
+                            {userList && userList.length > 0 && userList.map((user: {
+                                id: string,
+                                name: string
+                            }, index: number) => (
+                                <option key={index} value={user.id}>{user.name}</option>
+                            ))}
+                        </select>
+                    </>
 
-                <label>
-                    Date Created:
-                    <input
-                        type="date"
-                        value={substrate.date_created}
-                        onChange={(e) => setSubstrate({...substrate, date_created: e.target.value})}
-                        placeholder="Date Created"
-                        style={{width: '100%', padding: '10px', margin: '10px 0'}}
-                    />
-                </label>
+                    <label>
+                        <input
+                            className={"date-input"}
+                            type="date"
+                            value={substrate.date_created}
+                            onChange={(e) => setSubstrate({...substrate, date_created: e.target.value})}
+                            placeholder="Date Created"
+                        />
+                    </label>
+                </div>
 
-                <h2>Description</h2>
                 <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Enter description"
                     rows={5}
-                    style={{width: '100%'}}
+                    className={"input-description"}
                 />
             </div>
 
@@ -302,14 +309,13 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                         <div className={"line"}></div>
                         {isSubstrateChecked && (
                             <div className="section-content">
-                                <label>
-                                Company:
+                                <label className={"company-header"}>
                                     <input
+                                        className={"company-input"}
                                         type="text"
                                         value={substrate.Company}
                                         onChange={(e) => setSubstrate({ ...substrate, Company: e.target.value })}
                                         placeholder="Company"
-                                        style={{ width: '100%', padding: '10px', margin: '10px 0' }}
                                     />
                                 </label>
 
@@ -319,6 +325,7 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                         <th>Layer Name</th>
                                         <th>Layer Thickness (µm)</th>
                                         <th>Layer Composition</th>
+                                        <th></th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -357,11 +364,19 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                                                 placeholder="Percentage"
                                                             />
                                                         </label>
+                                                        <button type="button" onClick={() => removeLayerComp(layerIndex, compIndex)}>
+                                                            <Image src="/trash.png" alt="Delete Layer Comp" width={24} height={24} />
+                                                        </button>
                                                     </div>
                                                 ))}
-                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)}
-                                                        style={{background: 'none', border: 'none'}}>
-                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24}/>
+                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)}>
+                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24} />
+                                                </button>
+                                            </td>
+                                            <td>
+                                                {/* Bouton pour supprimer une couche */}
+                                                <button type="button" onClick={() => removeLayer(layerIndex)}>
+                                                    <Image src="/trash.png" alt="Delete Layer" width={24} height={24} />
                                                 </button>
                                             </td>
                                         </tr>
