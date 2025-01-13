@@ -1,5 +1,6 @@
 // components/ImageDisplay.tsx
 import React from 'react';
+import Image from 'next/image';
 
 interface ImageDisplayProps {
     url: string;
@@ -8,7 +9,7 @@ interface ImageDisplayProps {
 const ImageDisplay: React.FC<ImageDisplayProps> = ({ url }) => {
     return (
         <div>
-            <img src={`http://localhost:8000${url}`} alt="Sample" style={{ maxWidth: '50%', height: 'auto' }} />
+            <Image src={`http://localhost:8000${url}`} alt="Sample" style={{ maxWidth: '50%', height: 'auto' }} />
         </div>
     );
 };

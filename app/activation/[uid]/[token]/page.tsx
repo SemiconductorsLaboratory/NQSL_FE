@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useActivationMutation } from '@/redux/features/authApiSlice';
 import { toast } from 'react-toastify';
@@ -16,21 +16,21 @@ export default function Page({ params }: Props) {
 	const router = useRouter();
 	const [activation] = useActivationMutation();
 
+	const activateAccount = useCallback(async (uid: string, token: string) => {
+		try {
+			await activation({ uid, token }).unwrap();
+			toast.success('Account activated');
+		} catch {
+			toast.error('Failed to activate account');
+		} finally {
+			router.push('/auth/login');
+		}
+	}, [activation, router]);
+
 	useEffect(() => {
 		const { uid, token } = params;
-
-		activation({ uid, token })
-			.unwrap()
-			.then(() => {
-				toast.success('Account activated');
-			})
-			.catch(() => {
-				toast.error('Failed to activate account');
-			})
-			.finally(() => {
-				router.push('/auth/login');
-			});
-	}, []);
+		activateAccount(uid, token);
+	}, [params, activateAccount]);
 
 	return (
 		<div className='flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8'>
