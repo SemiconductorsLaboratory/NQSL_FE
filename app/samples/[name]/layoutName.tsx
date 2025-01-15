@@ -70,7 +70,7 @@ const SampleNameLayout: React.FC = () => {
             </button>
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <ModalSampleModification />
+                <ModalSampleModification/>
             </Modal>
 
             <div className="button-favorite">
@@ -94,6 +94,15 @@ const SampleNameLayout: React.FC = () => {
                     </button>
                 )}
             </div>
+
+            <button onClick={() => setIsModalOpen(true)} disabled={isProcessing}>
+                <Image
+                    src="/trash.png"
+                    width={35}
+                    height={35}
+                    alt="pen"
+                />
+            </button>
         </div>
     );
 };
