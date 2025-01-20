@@ -73,6 +73,15 @@ const SampleNameLayout: React.FC = () => {
                 <ModalSampleModification/>
             </Modal>
 
+            <button>
+                <Image
+                    src="/trash.png"
+                    width={35}
+                    height={35}
+                    alt="trash"
+                />
+            </button>
+
             <div className="button-favorite">
                 {isFavorite ? (
                     <button onClick={handleRemoveFavorite} disabled={isProcessing}>
@@ -94,15 +103,6 @@ const SampleNameLayout: React.FC = () => {
                     </button>
                 )}
             </div>
-
-            <button onClick={() => setIsModalOpen(true)} disabled={isProcessing}>
-                <Image
-                    src="/trash.png"
-                    width={35}
-                    height={35}
-                    alt="pen"
-                />
-            </button>
         </div>
     );
 };
