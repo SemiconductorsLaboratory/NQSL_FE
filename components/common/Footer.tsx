@@ -1,3 +1,5 @@
+const version = process.env.NEXT_PUBLIC_APP_VERSION;
+
 export default function Footer() {
 	return (
 		<footer className='bg-gray-100 h-16'>
