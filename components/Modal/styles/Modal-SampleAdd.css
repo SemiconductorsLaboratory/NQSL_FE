@@ -4,12 +4,45 @@
     max-height: 90%;
     box-sizing: border-box;
     display: grid;
-    grid-template-columns: 1fr 5px 1fr 1fr;
-    grid-template-rows: 100px auto 10px;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto 1fr auto;
+}
+
+.container-propertyModalAdd {
+    background: white;
+    padding: 10px;
+    margin: 0 5px 5px 0;
+    border-radius: 10px 0 0 0;
+}
+.container-prevSampleModalAdd{
+    background: white;
+    padding: 10px;
+    margin: 0 0 5px 0;
+    border-radius: 0 10px 0 0;
+}
+.container-descriptionModelAdd{
+    background: white;
+    padding: 10px;
+    margin: 0 5px 0 0;
+}
+.container-companyModalAdd{
+    background: white;
+    padding: 10px;
+}
+.container-submitModelAdd{
+    background: white;
+    margin: 5px 0 0 0;
+    border-radius: 0 0 10px 10px;
+    grid-area: 3/1/3/3;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+
 }
 
 .sample-info {
     padding: 10px;
+    display: grid;
 }
 
 .sample-prevSample {
@@ -20,12 +53,6 @@
 .sample-substrate {
     grid-area: 2/3/3/5;
     padding: 10px;
-}
-
-.sample-submit{
-    display: flex;
-    justify-content: center;
-    grid-area: 4/1/3/5;
 }
 
 .sample-line {
@@ -223,11 +250,10 @@ select, textarea {
     border-color: white;
 }
 
-.name-and-date{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    justify-items: center;
+.date{
+    margin-top: 10px;
 }
+
 .date-input {
     width: 100%;
     background: white;
@@ -243,13 +269,8 @@ select, textarea {
 }
 
 .input-description {
-    margin-top: 10px;
     width: 100%;
-    background: white;
-    border-radius: 10px;
-    outline: none;
     border-color: white;
-    box-shadow: 2px 2px 4px darkgray;
 }
 .input-description:focus {
     box-shadow: 2px 2px 4px darkgray;
