@@ -4,6 +4,8 @@ import React, { useState, useEffect } from 'react';
 import "./styles/Modal-Experiment.css";
 import { useMethodListQuery, useSEMAddMutation, useDetailSampleQuery } from "@/redux/features/sampleApiSlice";
 import { useParams } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import SEMForm from '@/components/AddSample/SEM';
 
 interface SEMInfo {
     method: string;
@@ -88,66 +90,57 @@ const ModalExperiment: React.FC = () => {
         );
     }
 
+    const handleFormSubmission = () => {
+        // Do something after the form is successfully submitted,
+        // e.g., refresh data, show a success message, etc.
+        console.log("Form submitted successfully!");
+    };
+
     return (
-        <div className={"container-experiment"}>
-            <div className={"experiment"}>
-                {methods?.map((method: string) => (
-                    <div key={method}>
-                        <div
-                            className={"method-border method-block"}
-                            onClick={() => handleMethodClick(method)}
-                        >
-                            {method}
-                        </div>
-                    </div>
-                ))}
-            </div>
+        <Tabs defaultValue="tab-1" orientation="vertical" className="w-full flex-row">
+            <TabsList className="flex-col gap-1 bg-transparent py-0">
+                <TabsTrigger
+                    value="tab-1"
+                    className="data-[state=active]:bg-muted w-full justify-start data-[state=active]:shadow-none"
+                >
+                    SEM
+                </TabsTrigger>
+                <TabsTrigger
+                    value="tab-2"
+                    className="data-[state=active]:bg-muted w-full justify-start data-[state=active]:shadow-none"
+                >
+                    Projects
+                </TabsTrigger>
+                <TabsTrigger
+                    value="tab-3"
+                    className="data-[state=active]:bg-muted w-full justify-start data-[state=active]:shadow-none"
+                >
+                    Packages
+                </TabsTrigger>
+                <TabsTrigger
+                    value="tab-4"
+                    className="data-[state=active]:bg-muted w-full justify-start data-[state=active]:shadow-none"
+                >
+                    bite
+                </TabsTrigger>
 
-            <div className={"header-experiment"}>
-                {selectedMethod && <h1>{selectedMethod.toUpperCase()}</h1>}
-            </div>
 
-            {selectedMethod === 'sem' && (
-                <div className={"input-experiment"}>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        handleSubmit();
-                    }}>
-                        <p>Description</p>
-                        <input
-                            type="text"
-                            placeholder="Description"
-                            value={semInfo.description}
-                            onChange={(e) => setSEMInfo({...semInfo, description: e.target.value})}
-                        />
-                        <p>Magnification</p>
-                        <input
-                            type="number"
-                            placeholder="Magnification"
-                            value={semInfo.magnification}
-                            onChange={(e) => setSEMInfo({...semInfo, magnification: Number(e.target.value)})}
-                        />
-                        <p>Voltage</p>
-                        <input
-                            type="number"
-                            placeholder="Voltage"
-                            value={semInfo.voltage}
-                            onChange={(e) => setSEMInfo({...semInfo, voltage: Number(e.target.value)})}
-                        />
-                        <p>Current</p>
-                        <input
-                            type="number"
-                            placeholder="Current"
-                            value={semInfo.current}
-                            onChange={(e) => setSEMInfo({...semInfo, current: Number(e.target.value)})}
-                        />
-                        <button type="submit" disabled={isSubmitting}>Submit SEM Info</button>
-                    </form>
-                    {isSubmitError && <p>Error submitting SEM info. Please try again.</p>}
-                    {isSuccess && <p>SEM info submitted successfully!</p>}
-                </div>
-            )}
-        </div>
+            </TabsList>
+            <div className="grow rounded-md border text-start">
+                <TabsContent value="tab-1">
+                    <SEMForm onFormSubmit={handleFormSubmission} />
+                </TabsContent>
+                <TabsContent value="tab-2">
+                    <p className="text-muted-foreground px-4 py-3 text-xs">Content for Tab 2</p>
+                </TabsContent>
+                <TabsContent value="tab-3">
+                    <p className="text-muted-foreground px-4 py-3 text-xs">Content for Tab 3</p>
+                </TabsContent>
+                <TabsContent value="tab-4">
+                    <p className="text-muted-foreground px-4 py-3 text-xs">Content for Tab 4</p>
+                </TabsContent>
+            </div>
+        </Tabs>
     );
 };
 

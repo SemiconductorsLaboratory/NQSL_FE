@@ -213,18 +213,18 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
 
     return (
         <div className="container-modalAdd">
-            <div className="sample-info">
-                <input
-                    className={"name-input"}
-                    type="text"
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    placeholder="Enter name"
-                />
-                {isNameTaken && <p style={{color: 'red'}}>This name is already taken.</p>}
+            <div className="container-propertyModalAdd">
+                <div className="sample-info">
+                    <input
+                        className={"name-input"}
+                        type="text"
+                        value={nameInput}
+                        onChange={(e) => setNameInput(e.target.value)}
+                        placeholder="Enter name"
+                    />
+                    {isNameTaken && <p style={{color: 'red'}}>This name is already taken.</p>}
 
-                <div className={"name-and-date"}>
-                    <>
+                    <div className={"name-and-date"}>
                         <select
                             className={"date-input"}
                             value={selectedUser || ''}
@@ -238,9 +238,8 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                                 <option key={index} value={user.id}>{user.name}</option>
                             ))}
                         </select>
-                    </>
-
-                    <label>
+                    </div>
+                    <div className={"date"}>
                         <input
                             className={"date-input"}
                             type="date"
@@ -248,21 +247,10 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                             onChange={(e) => setSubstrate({...substrate, date_created: e.target.value})}
                             placeholder="Date Created"
                         />
-                    </label>
+                    </div>
                 </div>
-
-                <textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Enter description"
-                    rows={5}
-                    className={"input-description"}
-                />
             </div>
-
-            <div className={"sample-line"}></div>
-
-            <div className="sample-prevSample">
+            <div className="container-prevSampleModalAdd">
                 <div className="sections-container">
                     <div>
                         <div style={{display: 'flex', alignItems: 'center'}}>
@@ -278,7 +266,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                             />
                             <p className={"header-sample"}>Previous Sample</p>
                         </div>
-                        <div className={"line"}></div>
                         {isPrevSampleChecked && (
                             <div className="section-content">
                                 <SearchbarComponentPrevSample onSelect={handlePrevSampleSelect}/>
@@ -287,113 +274,119 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     </div>
                 </div>
             </div>
-
-            <div className={"sample-line"}></div>
-
-            <div className="sample-substrate">
-                <div className="sections-container">
-                    <div>
-                        <div style={{display: 'flex', alignItems: 'center'}}>
-                            <input
-                                type="checkbox"
-                                checked={isSubstrateChecked}
-                                onChange={() => {
-                                    setIsSubstrateChecked(!isSubstrateChecked);
-                                    if (!isSubstrateChecked) {
-                                        setIsPrevSampleChecked(false);
-                                    }
-                                }}
-                            />
-                            <p className={"header-sample"}>Substrate</p>
-                        </div>
-                        <div className={"line"}></div>
-                        {isSubstrateChecked && (
-                            <div className="section-content">
-                                <label className={"company-header"}>
-                                    <input
-                                        className={"company-input"}
-                                        type="text"
-                                        value={substrate.Company}
-                                        onChange={(e) => setSubstrate({ ...substrate, Company: e.target.value })}
-                                        placeholder="Company"
-                                    />
-                                </label>
-
-                                <table className="substrate-table">
-                                    <thead>
-                                    <tr>
-                                        <th>Layer Name</th>
-                                        <th>Layer Thickness (µm)</th>
-                                        <th>Layer Composition</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {substrate.layers.map((layer, layerIndex) => (
-                                        <tr key={layerIndex}>
-                                            <td>
-                                                <input
-                                                    type="text"
-                                                    value={layer.name}
-                                                    onChange={(e) => handleLayerChange(layerIndex, 'name', e.target.value)}
-                                                    placeholder="Layer Name"
-                                                    style={{ width: '100%', padding: '5px' }}
-                                                />
-                                            </td>
-                                            <td>
-                                                <input
-                                                    type="number"
-                                                    value={layer.layer_thickness}
-                                                    onChange={(e) => handleLayerChange(layerIndex, 'layer_thickness', e.target.value)}
-                                                    placeholder="Layer Thickness"
-                                                    style={{ width: '100%', padding: '5px' }}
-                                                />
-                                            </td>
-                                            <td>
-                                                {layer.layer_comp.map((comp, compIndex) => (
-                                                    <div key={`comp-${layerIndex}-${compIndex}`} className="layer-comp-section">
-                                                        <label>
-                                                            <p className={"elements"}>{comp.symbol}</p> {/* Utilisez `comp.symbol` ici */}
-                                                        </label>
-                                                        <label>
-                                                            <input
-                                                                className={"input-elementsPercentage"}
-                                                                type="number"
-                                                                value={comp.percentage}
-                                                                onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'percentage', e.target.value)}
-                                                                placeholder="Percentage"
-                                                            />
-                                                        </label>
-                                                        <button type="button" onClick={() => removeLayerComp(layerIndex, compIndex)}>
-                                                            <Image src="/trash.png" alt="Delete Layer Comp" width={24} height={24} />
-                                                        </button>
-                                                    </div>
-                                                ))}
-                                                <button type="button" onClick={() => openLayerCompPopup(layerIndex)}>
-                                                    <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24} />
-                                                </button>
-                                            </td>
-                                            <td>
-                                                {/* Bouton pour supprimer une couche */}
-                                                <button type="button" onClick={() => removeLayer(layerIndex)}>
-                                                    <Image src="/trash.png" alt="Delete Layer" width={24} height={24} />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-
-                                <button type="button" onClick={addLayer} style={{background: 'none', border: 'none'}}>
-                                    <Image src="/plus.png" alt="Add Layer" width={24} height={24}/>
-                                </button>
+            <div className="container-descriptionModelAdd">
+                <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter description"
+                    rows={5}
+                    className={"input-description"}
+                />
+            </div>
+            <div className="container-companyModalAdd">
+                <div className="sample-substrate">
+                    <div className="sections-container">
+                        <div>
+                            <div style={{display: 'flex', alignItems: 'center'}}>
+                                <input
+                                    type="checkbox"
+                                    checked={isSubstrateChecked}
+                                    onChange={() => {
+                                        setIsSubstrateChecked(!isSubstrateChecked);
+                                        if (!isSubstrateChecked) {
+                                            setIsPrevSampleChecked(false);
+                                        }
+                                    }}
+                                />
+                                <p className={"header-sample"}>Substrate</p>
                             </div>
-                        )}
+                            {isSubstrateChecked && (
+                                <div className="section-content">
+                                    <label className={"company-header"}>
+                                        <input
+                                            className={"company-input"}
+                                            type="text"
+                                            value={substrate.Company}
+                                            onChange={(e) => setSubstrate({ ...substrate, Company: e.target.value })}
+                                            placeholder="Company"
+                                        />
+                                    </label>
+
+                                    <table className="substrate-table">
+                                        <thead>
+                                        <tr>
+                                            <th>Layer Name</th>
+                                            <th>Layer Thickness (µm)</th>
+                                            <th>Layer Composition</th>
+                                            <th></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {substrate.layers.map((layer, layerIndex) => (
+                                            <tr key={layerIndex}>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        value={layer.name}
+                                                        onChange={(e) => handleLayerChange(layerIndex, 'name', e.target.value)}
+                                                        placeholder="Layer Name"
+                                                        style={{ width: '100%', padding: '5px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="number"
+                                                        value={layer.layer_thickness}
+                                                        onChange={(e) => handleLayerChange(layerIndex, 'layer_thickness', e.target.value)}
+                                                        placeholder="Layer Thickness"
+                                                        style={{ width: '100%', padding: '5px' }}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {layer.layer_comp.map((comp, compIndex) => (
+                                                        <div key={`comp-${layerIndex}-${compIndex}`} className="layer-comp-section">
+                                                            <label>
+                                                                <p className={"elements"}>{comp.symbol}</p> {/* Utilisez `comp.symbol` ici */}
+                                                            </label>
+                                                            <label>
+                                                                <input
+                                                                    className={"input-elementsPercentage"}
+                                                                    type="number"
+                                                                    value={comp.percentage}
+                                                                    onChange={(e) => handleLayerCompChange(layerIndex, compIndex, 'percentage', e.target.value)}
+                                                                    placeholder="Percentage"
+                                                                />
+                                                            </label>
+                                                            <button type="button" onClick={() => removeLayerComp(layerIndex, compIndex)}>
+                                                                <Image src="/trash.png" alt="Delete Layer Comp" width={24} height={24} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                    <button type="button" onClick={() => openLayerCompPopup(layerIndex)}>
+                                                        <Image src="/plus.png" alt="Add Layer Comp" width={24} height={24} />
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    {/* Bouton pour supprimer une couche */}
+                                                    <button type="button" onClick={() => removeLayer(layerIndex)}>
+                                                        <Image src="/trash.png" alt="Delete Layer" width={24} height={24} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        </tbody>
+                                    </table>
+
+                                    <button type="button" onClick={addLayer} style={{background: 'none', border: 'none'}}>
+                                        <Image src="/plus.png" alt="Add Layer" width={24} height={24}/>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <div className={"sample-submit"}>
+            <div className="container-submitModelAdd">
                 <button
                     onClick={handleSubmit}
                     disabled={isSubmitting || isNameTaken || !nameInput.trim() || !selectedUser || !description.trim()}
@@ -401,7 +394,6 @@ const ModalSampleAdd: React.FC<ModalSampleAddProps> = ({ refetchSamples }) => {
                     Submit
                 </button>
             </div>
-
             {isLayerCompPopupOpen && (
                 <div className="layer-comp-popup">
                     <div className="popup-content">
